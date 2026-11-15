@@ -11,7 +11,7 @@ score = 35·moon + 25·quality + 20·outcome + 20·material        (0–100)
 
 | Component | Definition | Range |
 |---|---|---|
-| `moon` | Rows inside the Moon habitat box, weighted by evidence grade (A 1, B 0.5, C 0.25) plus 0.25 for each row in the edge zone (O₂ ≥ 30 %, 0.694 < p ≤ 0.75 atm), divided by 20 and capped at 1. Box membership uses only pressure recorded in the source table. | 0–1 |
+| `moon` | Rows inside the Moon habitat box, weighted by evidence grade (A 1, B 0.5, C 0.25) plus 0.25 for each row in the edge zone (O₂ ≥ 30 %, 0.694 < p ≤ 0.75 atm), divided by 20 and capped at 1. Box membership uses the pressure placed on the map: the table value where the source gives one, otherwise the report-mapped value (PSI-20, 13 rows, flagged as assumed). The PSI-25 assumed 1 atm never qualifies. | 0–1 |
 | `quality` | Mean evidence-grade weight of all rows (A 1, B 0.66, C 0.33, D 0). | 0–1 |
 | `outcome` | Share of rows with a recorded outcome; high-confidence outcomes count 1, low-confidence (parsed from free text) count 0.5. | 0–1 |
 | `material` | Fuel phase: solid 1.0, liquid 0.6, gas 0.4. **Editorial choice**: solids are closest to crew-cabin materials. | 0.4–1 |

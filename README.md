@@ -10,7 +10,7 @@ Space Chillers · NASA Space Apps Challenge 2026 · "Flame in Freefall"
 ## What it shows
 - **Evidence Map** – every harmonized test row placed by oxygen and pressure, with the Moon habitat box (O₂ ≥ 30 %, ≤ 10.2 psi), the outcome of each test and how trustworthy each row is.
 - **Investigation ranking** – the 12 harmonized investigations ranked by how much test-level evidence they give for a Moon-habitat atmosphere, with the score broken into its parts.
-- **Where the evidence stops + AI insights** – the gaps in plain words, AI-written insight texts that are machine-checked and team-reviewed, an "Ask the evidence" box that counts matching tests live, and a CSV download of any filtered selection.
+- **Where the evidence stops + insights** – the gaps in plain words, plain-language insight texts prepared with an SI assistant, machine-checked and approved by the team, an "Ask the evidence" box that counts matching tests live, and a CSV download of any filtered selection.
 
 ![Evidence Map: oxygen vs pressure with the Moon habitat box and the 22.7 % solid-fuel line](docs/img/evidence-map.png)
 
@@ -36,7 +36,7 @@ Space Chillers · NASA Space Apps Challenge 2026 · "Flame in Freefall"
 - 1,137 of 1,805 rows record no outcome; "not recorded" is not "did not extinguish".
 - Grade B oxygen values are burner oxidizer fractions, not cabin air.
 - PSI-20 pressures are mapped from the final report, not measured per test.
-- PSI has no partial-gravity combustion data yet; microgravity and normal-gravity results can only bound lunar conditions.
+- PSI has no partial-gravity combustion data yet; microgravity and normal-gravity results can only bound lunar conditions (as the challenge description notes; LUCI and FM2 are expected to add such data).
 
 ## License
 - Code: MIT (`LICENSE`).

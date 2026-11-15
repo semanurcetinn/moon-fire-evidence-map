@@ -9,3 +9,10 @@ PSI_INVESTIGATIONS/
 DESTEK_KAYNAKLAR/
 __pycache__/
 .env
+specs/
+reports/
+research_notes/
+PLAN*.md
+*.pptx
+.env*
+proxy/.env

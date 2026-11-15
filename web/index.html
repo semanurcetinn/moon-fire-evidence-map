@@ -20,6 +20,30 @@
 </header>
 
 <main class="wrap">
+  <section id="journey" class="journey" aria-labelledby="jr-title">
+    <div class="section-head">
+      <h2 id="jr-title">Atmosphere Journey</h2>
+      <p class="muted">Walk from Earth to the expected Moon habitat to a spacesuit and see how many recorded tests exist near each atmosphere. <button type="button" class="btn" id="tour-start">Take the 90-second tour</button></p>
+    </div>
+    <div class="jr-layout">
+      <div class="jr-stage">
+        <canvas id="jr-canvas" class="jr-canvas" role="img" aria-label="Oxygen versus pressure plane with a probe moving from Earth to the Moon habitat box to a spacesuit; dots are recorded test rows"></canvas>
+        <div class="jr-controls">
+          <button type="button" class="btn" id="jr-play" aria-pressed="false">&#9654; Play the journey</button>
+          <button type="button" class="btn" id="jr-go-earth">Earth</button>
+          <button type="button" class="btn" id="jr-go-moon">Moon habitat box</button>
+          <button type="button" class="btn" id="jr-go-suit">Spacesuit</button>
+          <input type="range" id="jr-slider" min="0" max="1000" value="0" aria-label="Position along the journey" aria-valuemin="0" aria-valuemax="1000">
+        </div>
+        <p class="note">Schematic. Dots are recorded test rows (colour = outcome, opacity = evidence grade). Driven by recorded test outcomes, not a flame model.</p>
+      </div>
+      <aside class="jr-side" aria-live="polite">
+        <canvas id="jr-flame" class="jr-flame" role="img" aria-label="Evidence Flame: the outcome shares of the tests in the window"></canvas>
+        <p class="note jr-flame-note">Evidence Flame: ring colours are the outcome shares of the tests in the window; brightness is the share with a recorded outcome; sharpness is evidence quality. Not a prediction.</p>
+        <div id="jr-text" class="jr-text"></div>
+      </aside>
+    </div>
+  </section>
   <section id="map-section" aria-labelledby="map-title">
     <div class="section-head">
       <h2 id="map-title">Evidence Map</h2>
@@ -78,8 +102,8 @@
 
   <section id="ai-section" aria-labelledby="ai-title" hidden>
     <div class="section-head">
-      <h2 id="ai-title">AI insights</h2>
-      <p class="ai-label">AI-generated from the frozen dataset · numbers machine-checked · reviewed by the team</p>
+      <h2 id="ai-title">Insights</h2>
+      <p class="ai-label">Summary text prepared with an SI assistant from the frozen dataset · every number machine-checked · reviewed and approved by the team</p>
     </div>
 
     <!-- "Ask the evidence" (S4B). Logic lives in js/rag.js; set data-enabled="true" once
@@ -108,5 +132,10 @@
 </footer>
 
 <script src="js/app.js"></script>
+<div id="tour-box" class="tour-box" role="dialog" aria-label="Guided tour" hidden>
+  <p id="tour-text"></p>
+  <div class="btn-row"><button type="button" class="btn" id="tour-next">Next</button><button type="button" class="btn" id="tour-close">Close</button></div>
+</div>
+<script src="js/journey.js"></script>
 </body>
 </html>

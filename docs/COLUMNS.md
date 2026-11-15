@@ -17,7 +17,7 @@ Columns of the dashboard dataset (`web/data/app_data.json → experiments[]`), w
 | `conf` | Outcome confidence: `high` (outcome column in the source) or `low` (parsed from free text or reviewed by hand); empty when not recorded |
 | `grade` | Evidence grade: **A** clean test-level row · **B** oxygen is the burner oxidizer fraction · **C** approximate (summary row, assumed or report-mapped pressure, derived oxygen or anomaly) · **D** oxygen or pressure missing |
 | `o2_basis` | `ambient`, `oxidizer_stream` (inverse flames) or `derived` |
-| `box` | `in_box` (O₂ ≥ 30 % and measured p ≤ 0.694 atm) · `edge` (O₂ ≥ 30 %, 0.694 < p ≤ 0.75 atm) · `near_miss` · `none` |
+| `box` | `in_box` (O₂ ≥ 30 % and p ≤ 0.694 atm, table value or report-mapped value; see `p_assumed`) · `edge` (O₂ ≥ 30 %, 0.694 < p ≤ 0.75 atm) · `near_miss` · `none` |
 | `plottable` | `true` when oxygen and pressure are both present (row can be placed on the map) |
 | `dup` | `true` for the second and later copies of an identical row in the source file (kept, flagged) |
 | `flags` | Quality flags, separated by `;` (details per row in `data/quality_log.csv`) |

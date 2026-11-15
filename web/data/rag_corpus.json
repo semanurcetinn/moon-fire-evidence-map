@@ -14,7 +14,7 @@
     "PSI-68"
    ],
    "title": "What the data covers in a Moon-habitat atmosphere",
-   "text": "87 test rows fall inside the Moon habitat box (oxygen at or above 30 %, pressure at or below 10.2 psi): 20 clean (grade A), 46 with oxidizer-stream oxygen (grade B) and 21 approximate (grade C). 79 of them are gaseous flames and 8 are liquid droplets; none is a solid fuel. Fabrics and plastics, the materials that burn in a crew cabin, are therefore not represented at Moon-habitat conditions in PSI. Evidence: mixed.",
+   "text": "87 test rows fall inside the Moon habitat box (oxygen at or above 30 %, pressure at or below 10.2 psi): 20 clean (grade A), 46 with oxidizer-stream oxygen (grade B) and 21 approximate (grade C). 79 of them are gaseous flames and 8 are liquid droplets (FLEX-2 summary rows, grade C); none is a solid fuel. Fabrics and plastics, the materials that burn in a crew cabin, are therefore not represented at Moon-habitat conditions in PSI. Evidence: mixed.",
    "evidence": "mixed"
   },
   {
@@ -165,7 +165,7 @@
     "PSI-159"
    ],
    "title": "PSI-159 (ACME CFI-G) summary",
-   "text": "ACME CFI-G burned ethane, propane and butane, pure or diluted, on a spherical burner in the Combustion Integrated Rack, at oxygen from 12 to 85 % and pressure from 0.489 to 3.267 atm. In its inverse flames oxygen flowed out of the burner into a fuel-laden atmosphere, which gave the highest oxygen levels in PSI. Evidence: mixed.",
+   "text": "ACME CFI-G burned ethane, propane and butane, pure or diluted, on a spherical burner in the Combustion Integrated Rack, at oxygen from 12 to 85 % and pressure from 0.489 to 3.267 atm. In its inverse flames oxygen flowed out of the burner into a fuel-laden atmosphere, which, together with the PSI-10 inverse flames, gave the highest oxygen levels in PSI (up to 85 %). Evidence: mixed.",
    "evidence": "mixed"
   },
   {
@@ -345,7 +345,7 @@
     "PSI-68"
    ],
    "title": "PSI-68 (FLEX-2) summary",
-   "text": "FLEX-2 burned droplets of single fuels and mixtures (heptane, decane, ethanol, n-octane, iso-octane, propanol-glycerol) in the Multi-user Droplet Combustion Apparatus. Its PSI table lists 8 summary rows at 0.5 atm with oxygen from 17 to 30 %. Evidence: C.",
+   "text": "FLEX-2 burned droplets of single fuels and mixtures (heptane, decane, ethanol, n-octane, iso-octane, propanol-glycerol) in the Multi-user Droplet Combustion Apparatus. Its PSI table lists 8 summary rows spanning 0.5 to 3 atm with oxygen from 17 to 30 %. Evidence: C.",
    "evidence": "C"
   },
   {
@@ -355,7 +355,7 @@
     "PSI-68"
    ],
    "title": "PSI-68 (FLEX-2) fire-safety relevance",
-   "text": "Ranked 7 of 12 with a score of 23.8: all 8 rows fall in the Moon habitat box and are the only liquid-fuel rows inside it. They show that droplet tests were run at Moon-habitat-like conditions. Evidence: C.",
+   "text": "Ranked 7 of 12 with a score of 23.8: all 8 rows fall in the Moon habitat box and are the only liquid-fuel rows inside it. Because each row is a range, the table cannot show whether any single test combined 30 % oxygen or more with 10.2 psi or less. Evidence: C.",
    "evidence": "C"
   },
   {

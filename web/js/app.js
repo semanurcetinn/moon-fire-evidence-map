@@ -363,7 +363,7 @@
 
   // ---- AI insights (S4 data, S3 §6) ---------------------------------------------
   var insights = null, invById = {};
-  function badge(ev) { return '<span class="badge ' + esc(ev) + '" title="Evidence grade relied on">Evidence ' + esc(ev) + "</span>"; }
+  function badge(ev) { if (!ev || ev === "n/a") return ""; return '<span class="badge ' + esc(ev) + '" title="Evidence grade relied on">Evidence ' + esc(ev) + "</span>"; }
   function sourcesHtml(list) {
     return '<p class="sources">Sources: ' + (list || []).map(function (id) {
       var v = invById[id];
@@ -385,7 +385,7 @@
     if (!id || !e) { card.hidden = true; card.innerHTML = ""; return; }
     var v = invById[id] || {};
     card.innerHTML = "<h3>" + esc(v.acronym || id) + ' <span class="psi muted">' + esc(id) + "</span></h3>" +
-      '<p class="ai-label">AI-generated from the frozen dataset · numbers machine-checked · reviewed by the team</p>' +
+      '<p class="ai-label">Summary text prepared with an SI assistant from the frozen dataset · every number machine-checked · reviewed and approved by the team</p>' +
       "<dl><dt>What it measured</dt><dd>" + esc(e.summary) + "</dd>" +
       "<dt>Fire-safety relevance</dt><dd>" + esc(e.fire_safety_relevance) + "</dd>" +
       "<dt>Limits of this table</dt><dd>" + esc(e.limits) + "</dd></dl>" +
