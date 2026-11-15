@@ -50,11 +50,28 @@
   function round(x, n) { var p = Math.pow(10, n); return Math.round(x * p) / p; }
   function rangeTxt(a, b, unit) {
     if (a == null && b == null) return "n/a";
+    if (a == null) return round(b, 2) + unit;
     if (a === b || b == null) return round(a, 2) + unit;
     return round(a, 2) + "–" + round(b, 2) + unit;
   }
 
   // ---- filtering ----------------------------------------------------------------
+  // Fuel matching mirrors js/rag.js so "Show on map" draws exactly the rows the question counted.
+  var FUELS = {
+    pmma: /\bpmma\b|acrylic|plexiglas/i, heptane: /\bheptane\b/i, methanol: /\bmethanol\b/i,
+    ethanol: /\bethanol\b/i, ethylene: /\bethylene\b|\bc2h4\b/i, butane: /\bbutane\b/i,
+    ethane: /\bethane\b/i, propane: /\bpropane\b|\bc3h8\b/i, methane: /\bmethane\b|\bch4\b/i,
+    propylene: /\bpropylene\b/i, sibal: /\bsibal\b/i, silicone: /\bsilicone\b/i, cotton: /\bcotton\b/i,
+    fiberglass: /fiberglass/i, dodecane: /dodecane|\bc12h26\b/i, octane: /octane/i, decane: /\bdecane\b/i,
+    nomex: /\bnomex\b/i, kapton: /\bkapton\b/i, delrin: /\bdelrin\b/i, ultem: /\bultem\b/i
+  };
+  var P_EPS = 5e-4; // 10.2 psi = 0.69407 atm must include rows stored as 0.694 (same as rag.js)
+  function fuelRegex(f) {
+    var m = /^(\d+(?:\.\d+)?)% (\w+)$/.exec(f);
+    if (m) return new RegExp("(?:^|[^0-9.])" + m[1].replace(".", "\\.") + "\\s*%\\s*" + m[2] + "\\b", "i");
+    if (FUELS[f]) return FUELS[f];
+    return new RegExp("\\b" + String(f).replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "i");
+  }
   function passes(r, f) {
     if (f.phase.length && f.phase.indexOf(r.phase) < 0) return false;
     if (f.psi.length && f.psi.indexOf(r.psi) < 0) return false;
@@ -64,11 +81,11 @@
     if (f.recordedOnly && r.outcome === "unknown") return false;
     if (f.box === "box_edge") { if (r.box !== "in_box" && r.box !== "edge") return false; }
     else if (f.box && r.box !== f.box) return false;
-    if (f.fuel && !(r.fuel && r.fuel.toLowerCase().indexOf(String(f.fuel).toLowerCase()) >= 0)) return false;
+    if (f.fuel && !(r.fuel && fuelRegex(f.fuel).test(r.fuel))) return false;
     if (f.o2_min != null && !(r.o2_max != null && r.o2_max >= f.o2_min)) return false;
     if (f.o2_max != null && !(r.o2_min != null && r.o2_min <= f.o2_max)) return false;
-    if (f.p_min_atm != null && !(r.p != null && r.p >= f.p_min_atm)) return false;
-    if (f.p_max_atm != null && !(r.p != null && r.p <= f.p_max_atm)) return false;
+    if (f.p_min_atm != null && !(r.p != null && r.p >= f.p_min_atm - P_EPS)) return false;
+    if (f.p_max_atm != null && !(r.p != null && r.p <= f.p_max_atm + P_EPS)) return false;
     return true;
   }
 
@@ -96,6 +113,7 @@
       "Fuel: " + esc(r.fuel || "n/a") + " (" + esc(PHASE[r.phase].label.toLowerCase()) + ")<br>" +
       "O₂: " + rangeTxt(r.o2_min, r.o2_max, " %") + (r.o2_basis === "oxidizer_stream" ? " (oxidizer stream)" : "") + "<br>" +
       "Pressure: " + pTxt + "<br>" +
+      (r.flow_min != null || r.flow_max != null ? "Flow: " + rangeTxt(r.flow_min, r.flow_max, " cm/s") + "<br>" : "") +
       "Outcome: " + esc(OUT[r.outcome].label) + (r.conf ? " (" + r.conf + " confidence)" : "") + "<br>" +
       "Grade: " + esc(GRADES[r.grade].label) + "<br>" +
       "<span style='font-size:11px'>Source: " + esc(r.src) + ", row " + r.row + "</span>";
@@ -254,6 +272,22 @@
     tier1.forEach(function (v) { checkbox("f-psi", v.psi_id, esc((v.acronym || v.psi_id)) + ' <span class="muted">' + esc(v.psi_id) + "</span>"); });
     $("filters").addEventListener("change", syncFromUI);
     $("reset").addEventListener("click", function () { state = emptyFilter(); syncToUI(); update(); });
+    $("download").addEventListener("click", downloadCsv);
+    $("query-chip").addEventListener("click", function () {
+      state.fuel = null; state.o2_min = state.o2_max = state.p_min_atm = state.p_max_atm = null;
+      if (state.box !== "box_edge") state.box = null;
+      update();
+    });
+  }
+  function queryChipText() {
+    var parts = [];
+    if (state.fuel) parts.push("fuel: " + state.fuel);
+    if (state.o2_min != null) parts.push("O₂ ≥ " + state.o2_min + " %");
+    if (state.o2_max != null) parts.push("O₂ ≤ " + state.o2_max + " %");
+    if (state.p_min_atm != null) parts.push("p ≥ " + state.p_min_atm + " atm");
+    if (state.p_max_atm != null) parts.push("p ≤ " + state.p_max_atm + " atm");
+    if (state.box && state.box !== "box_edge") parts.push({ in_box: "Moon box", edge: "edge", near_miss: "near miss", none: "outside box" }[state.box] || state.box);
+    return parts.join(" · ");
   }
   function update() {
     var n = state.psi.filter(function (x) { return x !== "__none__"; }).length;
@@ -261,7 +295,173 @@
     Array.prototype.forEach.call(document.querySelectorAll("#rank-table tbody tr"), function (tr) {
       tr.classList.toggle("active", state.psi.length === 1 && state.psi[0] === tr.dataset.psi);
     });
+    var chip = queryChipText();
+    $("query-chip").hidden = !chip;
+    $("query-chip").textContent = chip ? "Query: " + chip : "";
+    $("query-chip").title = "Clear the conditions set from a question";
+    var nAll = rows.filter(function (r) { return passes(r, state); }).length;
+    $("download-note").textContent = "CSV: " + fmtInt(nAll) + " rows pass these filters, including rows that cannot be placed on the map.";
     renderPlot();
+  }
+
+  // ---- public API for the "Ask the evidence" box (field names = S4B `parsed`) -----
+  var FILTER_KEYS = ["phase", "psi", "outcome", "grade", "box", "fuel", "o2_min", "o2_max", "p_min_atm", "p_max_atm"];
+  function applyFilter(filter) {
+    state = emptyFilter();
+    FILTER_KEYS.forEach(function (k) {
+      var v = filter && filter[k];
+      if (v == null) return;
+      state[k] = Array.isArray(v) ? v.slice() : v;
+    });
+    syncToUI(); update();
+    return plotted.filter(function (r) { return passes(r, state); }).length;
+  }
+  function countPlotted(filter) {
+    var f = emptyFilter();
+    FILTER_KEYS.forEach(function (k) { if (filter && filter[k] != null) f[k] = filter[k]; });
+    return plotted.filter(function (r) { return passes(r, f); }).length;
+  }
+
+  // ---- CSV download (all rows passing the current filters) ------------------------
+  var CSV_COLS = ["psi", "test", "fuel", "phase", "o2_min", "o2_max", "p", "p_max", "p_assumed", "flow_min", "flow_max",
+    "outcome", "conf", "grade", "o2_basis", "box", "plottable", "dup", "flags", "src", "row"];
+  function csvCell(v) {
+    if (v == null) return "";
+    if (Array.isArray(v)) v = v.join(";");
+    v = String(v);
+    return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+  function downloadCsv() {
+    var sel = rows.filter(function (r) { return passes(r, state); });
+    var lines = [CSV_COLS.join(",")].concat(sel.map(function (r) { return CSV_COLS.map(function (c) { return csvCell(r[c]); }).join(","); }));
+    var blob = new Blob(["﻿" + lines.join("\r\n") + "\r\n"], { type: "text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "moon-fire-evidence-rows-" + app.meta.data_version + ".csv";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  // ---- "Where the evidence stops" (S3 §5) ---------------------------------------
+  function renderStops() {
+    var f = app.facts, mb = f.moon_box, g = mb.by_grade;
+    var boxes = [
+      ["Inside the box: " + fmtInt(mb.in_box) + " rows",
+       fmtInt(g.A || 0) + " clean (A), " + fmtInt(g.B || 0) + " oxidizer-stream (B), " + fmtInt(g.C || 0) + " approximate (C)." +
+       (f.solid.in_box === 0 ? " All gas or liquid." : "")],
+      ["Solid fuels: " + fmtInt(f.solid.rows) + " rows", "None above " + f.solid.max_o2_pct + " % O₂."],
+      ["Outcome recorded for " + fmtInt(f.known_outcomes) + " of " + fmtInt(f.rows) + " rows", "'Not recorded' does not mean 'kept burning'."]
+    ];
+    $("stops").innerHTML = boxes.map(function (b) {
+      return '<div class="card"><b class="big">' + esc(b[0]) + "</b><p>" + esc(b[1]) + "</p></div>";
+    }).join("");
+  }
+
+  // ---- AI insights (S4 data, S3 §6) ---------------------------------------------
+  var insights = null, invById = {};
+  function badge(ev) { return '<span class="badge ' + esc(ev) + '" title="Evidence grade relied on">Evidence ' + esc(ev) + "</span>"; }
+  function sourcesHtml(list) {
+    return '<p class="sources">Sources: ' + (list || []).map(function (id) {
+      var v = invById[id];
+      return v ? '<a href="' + esc(v.doi_url) + '" target="_blank" rel="noopener" title="' + esc(v.title) + '">' + esc(id) + "</a>" : esc(id);
+    }).join(", ") + "</p>";
+  }
+  function renderInsights() {
+    $("global-cards").innerHTML = (insights.global || []).map(function (g) {
+      return '<article class="card" id="insight-' + esc(g.id) + '"><h4>' + esc(g.title) + badge(g.evidence) + "</h4><p>" + esc(g.text) + "</p>" + sourcesHtml(g.sources) + "</article>";
+    }).join("");
+    $("qa-list").innerHTML = (insights.qa || []).map(function (q) {
+      return "<details><summary>" + esc(q.q) + "</summary><p>" + esc(q.a) + " " + badge(q.evidence) + "</p>" + sourcesHtml(q.sources) + "</details>";
+    }).join("");
+    $("ai-section").hidden = false;
+  }
+  function renderInvCard(id) {
+    var card = $("inv-card");
+    var e = insights && insights.investigations && insights.investigations[id];
+    if (!id || !e) { card.hidden = true; card.innerHTML = ""; return; }
+    var v = invById[id] || {};
+    card.innerHTML = "<h3>" + esc(v.acronym || id) + ' <span class="psi muted">' + esc(id) + "</span></h3>" +
+      '<p class="ai-label">AI-generated from the frozen dataset · numbers machine-checked · reviewed by the team</p>' +
+      "<dl><dt>What it measured</dt><dd>" + esc(e.summary) + "</dd>" +
+      "<dt>Fire-safety relevance</dt><dd>" + esc(e.fire_safety_relevance) + "</dd>" +
+      "<dt>Limits of this table</dt><dd>" + esc(e.limits) + "</dd></dl>" +
+      '<p class="sources"><a href="' + esc(v.doi_url) + '" target="_blank" rel="noopener">Dataset DOI</a></p>';
+    card.hidden = false;
+  }
+  function loadInsights() {
+    return fetch("data/insights.json").then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(function (d) {
+      if (!d || !Array.isArray(d.global)) throw new Error("unexpected format");
+      insights = d; renderInsights();
+    }).catch(function (e) {
+      insights = null;
+      $("card-hint").hidden = true;
+      if (typeof console !== "undefined") console.warn("[app] AI insights not shown:", e.message);
+    });
+  }
+
+  // ---- "Ask the evidence" hook (S4B; logic in js/rag.js) -------------------------
+  var ASK_EXAMPLES = ["clean tests in the Moon habitat box", "solid fuel tests above 30% oxygen",
+    "FLEX tests at 30% oxygen or more", "what does not recorded mean"];
+  function initAsk() {
+    var sec = $("ask-evidence");
+    if (sec.dataset.enabled !== "true") return;
+    var s = document.createElement("script");
+    s.src = "js/rag.js";
+    s.onload = function () {
+      fetch("data/rag_corpus.json").then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (corpus) {
+          if (!window.RAG) throw new Error("RAG missing");
+          return Promise.resolve(window.RAG.init(app, corpus)).then(function (ok) {
+            if (ok === false) throw new Error("RAG.init failed");
+            ASK_EXAMPLES.forEach(function (t) {
+              var b = document.createElement("button"); b.type = "button"; b.className = "btn"; b.textContent = t;
+              b.addEventListener("click", function () { $("ask-input").value = t; ask(t); });
+              $("ask-examples").appendChild(b);
+            });
+            $("ask-form").addEventListener("submit", function (e) { e.preventDefault(); ask($("ask-input").value); });
+            sec.hidden = false; $("ai-section").hidden = false;
+          });
+        }).catch(function (e) { console.warn("[app] Ask the evidence disabled:", e.message); });
+    };
+    s.onerror = function () { console.warn("[app] Ask the evidence disabled: js/rag.js not found"); };
+    document.body.appendChild(s);
+  }
+  function ask(q) {
+    if (!q || !q.trim()) return;
+    var res;
+    try { res = window.RAG.ask(q); } catch (e) { console.warn("[app] RAG.ask failed:", e.message); return; }
+    var rb = $("ask-rows"), pb = $("ask-passages"), nb = $("ask-notes");
+    if (res.rows && res.rows.count != null) {
+      var outs = Object.keys(res.rows.by_outcome || {}).sort(function (a, b) { return res.rows.by_outcome[b] - res.rows.by_outcome[a]; })
+        .map(function (k) { return '<span class="item"><span class="swatch" style="background:' + (OUT[k] ? OUT[k].color : "#999") + '"></span>' + esc(OUT[k] ? OUT[k].label : k) + " " + res.rows.by_outcome[k] + "</span>"; }).join("");
+      var onMap = countPlotted(res.filter);
+      rb.innerHTML = "<h4>Matching tests: " + fmtInt(res.rows.count) + "</h4>" + '<div class="legend">' + outs + "</div>" +
+        '<p class="muted small">' + fmtInt(onMap) + " of them can be placed on the map.</p>" +
+        (res.rows.count ? '<button type="button" class="btn" id="ask-show">Show on map</button>' : "");
+      rb.hidden = false;
+      var btn = $("ask-show");
+      if (btn) btn.addEventListener("click", function () { applyFilter(res.filter); $("map-section").scrollIntoView({ behavior: "smooth", block: "start" }); });
+    } else { rb.hidden = true; rb.innerHTML = ""; }
+    var ps = res.passages || [];
+    pb.innerHTML = ps.length ? "<h4>Related findings</h4>" + ps.map(function (p) {
+      return "<p><b>" + esc(p.title) + "</b>" + badge(p.evidence) + "<br>" + esc(p.text) + "</p>";
+    }).join("") : "";
+    pb.hidden = !ps.length;
+    var ns = res.notes || [];
+    nb.innerHTML = ns.map(function (n) { return '<div class="note-item">' + esc(n) + "</div>"; }).join("");
+    nb.hidden = !ns.length;
+  }
+
+  // ---- footer (S3 §7) -------------------------------------------------------------
+  function renderFooter() {
+    $("footer").innerHTML =
+      "<p>Data: NASA Physical Sciences Informatics (PSI); dataset DOIs are linked in the ranking table. CC0-1.0 except PSI-10, whose license is not stated.</p>" +
+      "<p>Data version " + esc(app.meta.data_version) + " · source sha256 " + esc(String(app.meta.source_sha256).slice(0, 12)) +
+      ' · <a href="' + REPO_URL + '" target="_blank" rel="noopener">Code and data on GitHub</a></p>' +
+      "<p><b>Not an official NASA product. Not a safety assessment.</b></p>";
   }
 
   // ---- ranking ------------------------------------------------------------------
@@ -289,6 +489,7 @@
       var same = state.psi.length === 1 && state.psi[0] === id;
       state.psi = same ? [] : [id];
       syncToUI(); update();
+      renderInvCard(same ? null : id);
       if (!same) $("map-section").scrollIntoView({ behavior: "smooth", block: "start" });
     }
     tb.addEventListener("click", function (e) { if (e.target.tagName === "A") return; var tr = e.target.closest("tr"); if (tr) pick(tr); });
@@ -318,11 +519,16 @@
     rows = app.experiments;
     plotted = rows.filter(function (r) { return r.plottable; });
     tier1 = app.investigations.filter(function (v) { return v.rank != null; }).sort(function (a, b) { return a.rank - b.rank; });
+    app.investigations.forEach(function (v) { invById[v.psi_id] = v; });
     computeDisplayPositions();
     renderCounters();
     buildFilters();
     renderLegend();
     renderRanking();
+    renderStops();
+    renderFooter();
+    window.App = { applyFilter: applyFilter, countPlotted: countPlotted, getState: function () { return JSON.parse(JSON.stringify(state)); } };
+    loadInsights().then(initAsk);
     if (typeof Plotly === "undefined") return fail("The chart library could not be loaded. Check your connection and reload.");
     update();
     if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderPlot);
