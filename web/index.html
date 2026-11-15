@@ -1,1 +1,70 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Moon Fire Evidence Map</title></head><body><p>Moon Fire Evidence Map – loading soon</p></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moon Fire Evidence Map</title>
+<meta name="description" content="An evidence map of NASA microgravity combustion experiments for fire in a Moon-habitat atmosphere.">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Space Chillers · NASA Space Apps Challenge 2026 · Flame in Freefall</p>
+    <h1>Moon Fire Evidence Map</h1>
+    <p class="lede">An evidence map of NASA's microgravity combustion experiments that ranks investigations by how much they tell us about fire in a Moon-habitat atmosphere, and shows exactly where the evidence stops.</p>
+    <div class="counters" id="counters" aria-live="polite"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="map-section" aria-labelledby="map-title">
+    <div class="section-head">
+      <h2 id="map-title">Evidence Map</h2>
+      <p class="muted">Each point is one test row, placed by oxygen and pressure. <span id="plot-count" class="pill"></span></p>
+    </div>
+    <div class="map-layout">
+      <aside class="filters" id="filters" aria-label="Filters">
+        <fieldset><legend>Fuel phase</legend><div id="f-phase"></div></fieldset>
+        <fieldset><legend>Evidence grade</legend><div id="f-grade"></div></fieldset>
+        <fieldset><legend>Outcome</legend><div id="f-outcome"></div></fieldset>
+        <fieldset><legend>Investigation</legend>
+          <details id="f-psi-box"><summary id="f-psi-summary">All investigations</summary><div id="f-psi"></div></details>
+        </fieldset>
+        <fieldset><legend>Options</legend>
+          <label class="switch"><input type="checkbox" id="t-recorded"> Only rows with a recorded outcome</label>
+          <label class="switch"><input type="checkbox" id="t-hideb"> Hide oxidizer-stream O₂ (grade B)</label>
+          <label class="switch"><input type="checkbox" id="t-box"> Moon box + edge only</label>
+        </fieldset>
+        <button type="button" id="reset" class="btn">Reset filters</button>
+      </aside>
+      <div class="plot-col">
+        <div id="plot" class="plot" role="img" aria-label="Scatter plot of test rows by oxygen percentage and pressure"></div>
+        <div class="legend" id="legend"></div>
+        <p class="note" id="note-unplotted"></p>
+        <p class="note" id="note-axis"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="ranking-section" aria-labelledby="rank-title">
+    <div class="section-head">
+      <h2 id="rank-title">Investigation ranking</h2>
+      <p class="caveat">Score measures data coverage for the Moon-habitat question, not scientific merit. Material weighting is an editorial choice. <a id="method-link" href="#" target="_blank" rel="noopener">How is this computed?</a></p>
+    </div>
+    <div class="table-wrap">
+      <table class="rank" id="rank-table">
+        <thead><tr><th>Rank</th><th>Investigation</th><th>Phase</th><th class="num">Rows</th><th class="num">In Moon box</th><th class="num">Score</th><th>Score components</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="legend small" id="bar-legend"></div>
+    <p class="muted small">Click a row to show that investigation on the map.</p>
+    <details class="catalog" id="catalog"><summary id="catalog-summary"></summary><ul id="catalog-list"></ul></details>
+  </section>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>

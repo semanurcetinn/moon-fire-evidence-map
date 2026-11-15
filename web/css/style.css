@@ -1,0 +1,81 @@
+:root {
+  --bg: #ffffff;
+  --surface: #f5f6f8;
+  --fg: #1b1d21;
+  --muted: #5d636e;
+  --line: #d9dce1;
+  --accent: #2E7D32;
+  --link: #0b5cad;
+  --plot-grid: #e6e8ec;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121418; --surface: #1c1f25; --fg: #e8eaed; --muted: #a3a9b3; --line: #343842;
+    --link: #7fb4f0; --plot-grid: #2a2e36;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121418; --surface: #1c1f25; --fg: #e8eaed; --muted: #a3a9b3; --line: #343842;
+  --link: #7fb4f0; --plot-grid: #2a2e36;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--link); }
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 16px; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+
+.hero { border-bottom: 1px solid var(--line); padding: 14px 0 12px; }
+.kicker { margin: 0; color: var(--muted); font-size: 13px; }
+.hero h1 { margin: 2px 0 2px; font-size: 26px; line-height: 1.2; }
+.lede { margin: 0 0 10px; max-width: 900px; color: var(--muted); }
+.counters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.counter { background: var(--surface); border-radius: 8px; padding: 8px 12px; }
+.counter b { display: block; font-size: 24px; line-height: 1.1; }
+.counter span { color: var(--muted); font-size: 13px; }
+.counter.key b { color: #D55E00; }
+
+section { padding: 14px 0 6px; }
+.section-head h2 { margin: 0 0 2px; font-size: 20px; }
+.section-head p { margin: 0 0 8px; }
+.pill { display: inline-block; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 0 8px; color: var(--fg); font-size: 13px; }
+
+.map-layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 14px; align-items: start; }
+.filters { background: var(--surface); border-radius: 8px; padding: 8px 10px; font-size: 13.5px; }
+.filters fieldset { border: 0; margin: 0 0 6px; padding: 0; }
+.filters legend { font-weight: 600; padding: 0; margin-bottom: 2px; }
+.filters label { display: flex; align-items: center; gap: 6px; cursor: pointer; line-height: 1.35; padding: 1px 0; }
+.filters details summary { cursor: pointer; color: var(--link); }
+.filters #f-psi { max-height: 180px; overflow: auto; padding-top: 2px; }
+.swatch { display: inline-block; width: 11px; height: 11px; border-radius: 2px; flex: none; }
+.btn { border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 6px; padding: 4px 10px; cursor: pointer; font: inherit; }
+.btn:hover { border-color: var(--muted); }
+
+.plot { width: 100%; height: 520px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted); margin: 2px 0 0; }
+.legend .item { display: inline-flex; align-items: center; gap: 5px; }
+.legend svg { flex: none; }
+.note { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+.caveat { color: var(--muted); }
+.table-wrap { overflow-x: auto; }
+table.rank { width: 100%; border-collapse: collapse; font-size: 14px; }
+.rank th, .rank td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+.rank th { font-weight: 600; color: var(--muted); font-size: 13px; }
+.rank td.num, .rank th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.rank tbody tr { cursor: pointer; }
+.rank tbody tr:hover, .rank tbody tr.active { background: var(--surface); }
+.rank .psi { color: var(--muted); font-size: 12.5px; }
+.bar { display: flex; width: 220px; height: 12px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+.bar span { display: block; height: 100%; }
+.catalog { margin: 10px 0 24px; }
+.catalog summary { cursor: pointer; font-weight: 600; }
+.catalog li { margin: 3px 0; }
+
+@media (max-width: 900px) {
+  .counters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .map-layout { grid-template-columns: 1fr; }
+  .plot { height: 420px; }
+  .hero h1 { font-size: 22px; }
+}
