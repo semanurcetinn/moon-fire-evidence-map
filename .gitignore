@@ -1,0 +1,11 @@
+*.sqlite
+*.parquet
+*.xlsx
+*.pdf
+*.doc
+backup/
+PROJE_VERI/
+PSI_INVESTIGATIONS/
+DESTEK_KAYNAKLAR/
+__pycache__/
+.env

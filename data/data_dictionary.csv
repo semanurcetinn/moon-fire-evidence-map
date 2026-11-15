@@ -1,0 +1,30 @@
+﻿kolon,tip,aciklama,olasi_degerler
+psi_id,str,PSI investigation kimliği,
+test_id,str,Test kimliği (kaynak); yoksa PSI-XX-r<satır>; PSI-20: PSI-20-r<satır>-<n>. TEKİL DEĞİL – tekil anahtar: psi_id+source_file+source_row+test_id,
+fuel_or_material,str,Yakıt / malzeme (kaynak metni),
+fuel_phase,str,Yakıt fazı,solid | liquid | gas
+o2_pct_min,float64,"O2 % – HAM (birim çevrilmiş, değer düzeltmesi yok)",
+o2_pct_max,float64,O2 % – HAM,
+pressure_atm_min,float64,Basınç atm (ölçülen/tablo; PSI-20 rapor eşlemesi),
+pressure_atm_max,float64,Basınç atm,
+flow_cm_s_min,float64,Akış hızı cm/s,
+flow_cm_s_max,float64,Akış hızı cm/s,
+outcome,str,Sonuç,extinguished | blowoff | sustained | no_ignition | cool_flame | no_hot_ignition | droplet_disruption | unknown
+outcome_source,str,Sonucun kaynağı,column | parsed_text | manual_review | boş
+geometry_note,str,Geometri / tablo notları (metin),
+quality_flag,str,';' ile ayrılmış bayraklar (bkz. quality_log.csv),
+source_file,str,Kaynak dosya,
+source_row,int64,Kaynak dosyada satır no (başlık=1),
+raw_json,str,Orijinal satırın tüm kolonları (yalnız experiments.csv'de),
+o2_basis,str,O2'nin anlamı,ambient | oxidizer_stream | derived | boş
+pressure_atm_assumed,float64,Varsayılan/eşlenen basınç (atm),
+pressure_is_assumed,bool,Basınç varsayım mı,True | False
+o2_pct_report,float64,Rapordan türetilmiş O2 % (PSI-20),
+is_duplicate,bool,Aynı dosyada birebir kopyanın 2.+ örneği,True | False
+evidence_grade,str,Kanıt sınıfı (D<C<B<A),A | B | C | D
+outcome_confidence,str,Sonuç güveni,high (kaynak kolon) | low (parsed_text veya manual_review) | boş (unknown)
+variant,str,Dosya varyantı,inverse | normal | boş
+investigation_doi,str,Investigation DOI,
+license,str,Lisans (PSI-10 boş),CC0-1.0 | boş
+o2_pct_min_effective,float64,"O2 % – ETKİN: o2_pct_report doluysa o, değilse o2_pct_min. Filtre/grafik için bunu kullanın",
+o2_pct_max_effective,float64,O2 % – ETKİN (bkz. o2_pct_min_effective),

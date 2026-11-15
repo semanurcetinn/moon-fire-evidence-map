@@ -1,0 +1,264 @@
+# column_map.final.yaml  --  YAMA v2 (2026-11-14). Kaynak: column_map.verified.yaml + ETL/audit/proposed_yaml_changes.md (A1-A8, B1, B3, B6, B7)
+# Kanıt: ETL/audit/web_verify_log.md. Değiştirilen her satırda '# v2:' yorumu var.
+# Önceki başlık: column_map.verified.yaml  --  Faz 4 doğrulanmış kopya (kaynak: column_map.yaml TASLAK v0)
+# Kanıtlar: ETL/verify/verify_log.md  (#madde numaraları aşağıda). Kalan 'VERIFY' = kanıt yetersiz.
+# Orijinal: (TABLO_KATALOGU.csv'deki kolon adlarindan uretildi)
+# "VERIFY" = kolonun anlami/birimi dosya acilip dogrulanmadi. Dogrulamadan ETL'e koyma.
+#
+# HEDEF BIRIMLER:  o2_pct = hacimce %,  pressure_atm = atm,  flow_cm_s = cm/s
+#   psia -> /14.696 | mmHg -> /760 | bar -> /1.01325 | kPa -> /101.325
+#
+# KURALLAR
+#  1. O2 birimini KOLON ANLAMINA gore sec, buyukluge gore tahmin etme:
+#       "XO2", "mole fraction", "Xf"      -> kesir, x100
+#       "percent", "% by vol"             -> oldugu gibi
+#       Excel yuzde bicimli hucre (0.1605) -> kesir, x100
+#  2. Cok degerli hucre ("21; 26.5; 40", "21.5 - 21.7", "0.5; 1.0; 2.0") TEK degere sikistirilmaz:
+#       ya her degeri ayri satira ac, ya da min/max sakla. Hangisini sectigini quality_flag'e yaz.
+#  3. Sayisal olmayan degerler (none, OR, over, >500, video) -> null + quality_flag. Uydurma yapma.
+#  4. DEGER DUZELTME YOK. Supheli degeri oldugu gibi birak, quality_flag koy.
+#  5. Her satirda: psi_id, test_id, source_file, source_row, quality_flag, raw_json (orijinal tum kolonlar).
+#  6. Kaynakta olmayan basinc/O2'yi varsayarsan alan adina _assumed ekle ve flag koy.
+
+harmonized_fields:
+  - psi_id
+  - test_id
+  - fuel_or_material
+  - fuel_phase            # solid | liquid | gas
+  - o2_pct_min
+  - o2_pct_max
+  - pressure_atm_min
+  - pressure_atm_max
+  - flow_cm_s_min
+  - flow_cm_s_max
+  - outcome               # v2: extinguished | blowoff | sustained | no_ignition | cool_flame | no_hot_ignition | droplet_disruption | unknown
+  - outcome_source        # column | parsed_text | null
+  - geometry_note         # kalinlik, genislik, damlacik capi, brulor vb. (metin)
+  - quality_flag
+  - source_file
+  - source_row
+  - raw_json
+
+# v2: türetilmiş / ek kolonlar (ham değer değişmez)
+extra_fields: [o2_basis, pressure_atm_assumed, pressure_is_assumed, o2_pct_report, is_duplicate, evidence_grade, outcome_confidence, variant, investigation_doi, license]   # v3: outcome_confidence eklendi (high=kaynak kolon, low=parsed_text, boş=unknown); o2_pct_*_effective ETL sonunda türetilir
+
+# ------------------------------------------------------------------
+# TIER 1: harmonize edilecek (O2 / basinc / akis / yakit sinyali var)
+# ------------------------------------------------------------------
+investigations:
+
+  PSI-25:   # BASS-II, 129 satir, katı
+    fuel_phase: solid
+    primary_file: "PSI-25_Experimental table_BASS-II.csv"
+    better_source_for_multivalue: "BASS-II_Test_Matrix_by_PI_Final.xlsx"   # virgullu ayrim, gercek tarih
+    test_id: "Test #"
+    material: "Fuel Sample Material"
+    o2: {cols: ["Calibrated initial O2 % by vol", "Calibrated final O2 % by vol"], unit: percent, use: initial}
+    pressure_assumed: "ISS kabin ~1 atm (MSG)  # VERIFY (orta: Summary Report 'Ambient pressure was 1 atm'; SRD/ReadMe'de yok) – verify #6"
+    pressure_assumed_atm: 1.0   # ETL -> pressure_atm_assumed alanı + quality_flag pressure_assumed; pressure_atm_min/max BOŞ kalır
+    flow_col: "Air display"     # verify ek: ReadMe "Air display: flow speed measured in the duct in cm/s"; kalibrasyon UYGULANMAZ (deger duzeltme yok)
+    flow_unit: cm_s
+    flow:
+      source: "Air display (cm/s ~ x1.0066)  + Fan display (V x10)"
+      calibration: "Fan_calibration_data.xlsx: U[cm/s]=1.0066*AirDisplay, FanV=FanDisplay/10"
+      note: "hucre bir akis TARAMASI (ornek '5, 3, 2, 1, low'); Flow restrictor (0/1/2) kalibrasyon blogunu secer"
+    outcome:
+      source: parsed_text
+      parse_from: ["Fan display", "Air display"]
+      keywords: {extinguished: ["ext", "extinguished", "out"], blowoff: ["blowoff"], no_ignition: ["no ign", "would not stay lit"]}
+    known_quality_issues:
+      - {tests: [B2, P22a, P22b, T28a, T28b], issue: "bitis O2 imkansiz (1.6/0.6/39.1/0.9/40.4)"}
+      - {tests: [T9, T18], issue: "Date yili 2018, GMT gunu 2014 ile uyumlu"}
+      - {tests: [O10], issue: "Date 7/22 ama GMT 213 (=1 Agustos)"}
+      - {tests: [B14], issue: "CO2/CO yer degisimi suphesi, dogrulanamadi; Test.Matrices.xlsx ile birebir ayni (kayma varsa kaynagin kendisinde)"}   # v2: B7, web_verify_log #10
+      - "KAPSAM.csv'deki 'O2>=30% evet' sonucu bu yazim hatalarindan geliyor -> YANLIS; gercek baslangic O2 en fazla 22.2"
+    expected_rows: 129
+
+  PSI-26:   # BASS, 122 satir
+    outcome_review: true   # v3: ETL/out/psi26_outcome_review.csv (tam metin + eşleşen regex)
+    outcome_overrides:     # v3.1: elle inceleme (kurallardan SONRA uygulanır; outcome_source=manual_review, confidence=low, bayrak outcome_manual_review)
+      - {source_row: 47, test_id: "45", outcome: sustained, reason: "kural pos/neg çakışması verdi; 'didn't' 'complete change'i olumsuzluyor, yanmayı değil", quote: "steady spread at 9 cm/s! ... burned out whole sample"}
+      - {source_row: 41, test_id: "39", outcome: extinguished, reason: "kendiliğinden sönme açıkça yazılı", quote: "Flame extinguished all by itself."}
+      - {source_row: 71, test_id: "68", outcome: extinguished, reason: "ilk iki deneme tutuşmadı, sonra tutuştu; akış düşürülünce alev söndü", quote: "decreased flow ... then flame went out."}
+    fuel_phase: solid
+    primary_file: "PSI-26_Experimental table_BASS.csv"     # yalniz 6 kolon: kosul YOK
+    conditions_file: "PSI-26_Science Documents_As Run_Test Matrix.xlsx"
+    conditions_sheet: "as run matrix"        # verify #7a: 129 test (2012+2013 birleşik); diğerleri: 2012, 2013, TP without Data
+    o2: {col: "O2 % by volume", unit: fraction}   # v2: A6 – kesir (x100); kanıt: BASS sunumu "17% O2/N2" = matris 0.1707 (web_verify_log #4)
+    pressure: {col: "pressure, atm", unit: atm}
+    join_key: "Test #"                        # (eski taslak; tekil değil)
+    conditions_join_key:   # v2: A7 – bileşik anahtar + tarih normalizasyonu; "ilk eşleşmeyi al" YOK (tam eşleşme yoksa boş + bayrak)
+      table: ["As Run Test #", "Date", "Test #"]   # v2 (8.3 düzeltme turu 1): 24 ve 85 aynı tarihte 2 kez -> Test # (12-R/12-R2, 117/117a) ayırt eder
+      conditions: ["As run test no.", "Actual Date  (for SPICE Display Date, add 1 for Leap Year)", "Test no."]
+      date_normalize: true
+    conditions_flow_col: "Air display"     # v2: 2.3 – PSI-25 ile aynı kural (cm/s, tarama metni, pot ayarı yok sayılır)
+    conditions_outcome_col: "Test Observations and Anomalies (ignited, spread, extinguished, burn time, color, etc.)"   # v2: 2.3
+    flow_unit: cm_s
+    outcome:   # v2: 2.3 – KATI regex listesi; olumsuzluk koruması; birden çok kategori -> unknown + outcome_ambiguous
+      source: parsed_text
+      outcome_from: conditions
+      negation_guard: true
+      pos_neg_conflict: true   # v3: aynı kategori için hem olumlu hem olumsuz eşleşme -> unknown + outcome_ambiguous
+      ambiguity_rules:         # v3: insan incelemesi öncesi sertleştirme (Yama v3 madde 2)
+        - {category: no_ignition, pattern: "did not ignite (on )?(the )?(first|initial|1st|2nd|\\d+(st|nd|rd|th)?)( \\d+)? (attempts?|tries|try)", excludes_hit: true, positive_context: ["\\bignited\\b", "\\blit on\\b", "\\bflame\\b"], why: "ilk N denemede tutuşmama tek başına no_ignition değil"}
+        - {category: blowoff, pattern: "bottom half|top half|partial|but not|did not blow out", makes_ambiguous: true, why: "kısmi / olumsuz blowoff"}
+      patterns:
+        extinguished: ["\\bself[- ]?extinguish\\w*", "\\bextinguish(ed|es)?\\b", "\\bwent out on its own\\b"]
+        blowoff: ["\\bblow ?off\\b", "\\bblew (off|out)\\b", "\\bblow(n)? out\\b"]
+        sustained: ["\\bburned to completion\\b", "\\bburned completely\\b", "\\bburned out (the )?(whole |entire )?(sample|fuel)\\b", "\\bkept (going|burning)\\b", "\\bsteady spread\\b", "\\bsustain\\w*", "\\bpropagat\\w*"]
+        no_ignition: ["\\bno ignition\\b", "\\bdid not ignite\\b", "\\bdidn't ignite\\b", "\\bfailed to ignite\\b"]
+    test_id: "As Run Test #"                  # koşu kimliği (Test # = planlanan test no., tekrarlı)
+    material: "Fuel Sample Material"
+    note: "tablodaki 6 kolonda O2/basinc yok; kosullar Test Matrix'te"
+
+  PSI-69:   # FLEX, 274 satir, sivi damlacik
+    fuel_phase: liquid
+    primary_file: "PSI-69_Experimental table_FLEX.csv"
+    test_id: "FLEX Test #"
+    fuel: "Fuel"
+    o2: {col: "O initial ambient composition; mole fraction", unit: fraction}     # KAPSAM.csv bu kolonu KACIRDI ('O2' gecmiyor)
+    diluents: ["N initial ambient composition; mole fraction", "CO initial ambient composition; mole fraction", "He initial ambient composition; mole fraction"]
+    pressure: {col: "Ambient pressure; mmHg", unit: mmHg}
+    outcome:
+      source: column
+      cols: ["Visible flame extinction diameter; mm", "Burn time; s", "Test end"]
+      outcome_col: "Test end"
+      map: {Extinction: extinguished, Completion: sustained, Disruption: droplet_disruption}   # v2: A3 – NASA/TP-2015-216046: test sönme olmadan damlacık parçalanmasıyla bitti (web_verify_log #1); Completion eşlemesi değişmedi
+    note: "CO kolonu = CO2 (verify #1a: Test Plan 'Suppressant: CO2', XN2 = 1 - XO2 - XCO2; satır toplamı = 1)"   # v2: A4 – ek kanıt: TP-2015-216046 Tablo IX başlığı "O2 N2 CO2 He"
+    diluent_names: {"CO initial ambient composition; mole fraction": CO2}
+    calibration_txt: "PSI-69 Calibration .txt dosyalari (97) -> MVP disi"
+
+  PSI-68:   # FLEX-2, 8 satir (ozet tablo)
+    fuel_phase: liquid
+    primary_file: "PSI-68_Experimental table_Flex2.csv"
+    fuel: "Sample (Fuel Type)"
+    o2: {col: "Oxygen Mole Fraction", unit: fraction, multivalue: true}
+    pressure: {col: "Ambient Pressure (atm)", unit: atm, multivalue: true}
+    flow: {col: "Flow Velocity (cm/s)", unit: cm_s}
+    note: "ozet tablo, test-duzeyi degil"
+    row_level: summary   # ETL -> quality_flag summary_row; moon box ayrı raporlar
+
+  PSI-98:   # SAFFIRE-I, 4 satir
+    fuel_phase: solid
+    primary_file: "PSI-98_Experimental table_SAFFIRE-1.csv"
+    material: "Material"
+    o2: {col: "Percent O2", unit: percent, multivalue: true}      # '21.5 - 21.7'
+    flow: {col: "Air Flow (cm/s)", unit: cm_s}
+    geometry: ["Sample Thickness (cm)", "Sample Length (cm)", "Sample Width (cm)", "Flow Direction"]
+    outcome: {source: column, cols: ["Burn Time (s)"]}   # kategori yok -> unknown
+    non_test_row_pattern: "^(F\\dC\\d|Note\\s*\\d)"   # F1C1/F2C1 akış görselleştirme satırları (verify ek)
+
+  PSI-99:   # SAFFIRE-II, 15 satir
+    fuel_phase: solid
+    primary_file: "PSI-99_Experimental table_SAFFIRE-2.csv"
+    material: "Material"   # v3: fuel_or_material boştu (yaml'da eşleme yoktu)
+    o2: {col: "Percent O2 (Note 1)", unit: percent, multivalue: true, derived: true}   # verify #2a: Note 1 = "Derived from measured CO2 production and referenced to initial O2 concentration reported by ISS"
+    flow: {col: "Air Flow (cm/s)", unit: cm_s}
+    outcome: {source: column, cols: ["Burn Time (s)", "?-g Burn Length", "?-g Spread Length"]}   # v2: A5 – '?-g' = µ-g (mikro-yerçekimi); kanıt NTRS 20180005168 Tablo 1 (web_verify_log #3); kategori yok -> unknown
+    geometry_note_suffix: "'?-g' kolonları = µ-g (mikro-yerçekimi) yanma uzunluğu/yayılma hızı; CSV'de µ karakteri '?' olarak bozulmuş"   # v2: 3.6
+    non_test_row_pattern: "^(F\\dC\\d|Note\\s*\\d)"
+
+  PSI-100:  # SAFFIRE-III, 2 satir
+    fuel_phase: solid
+    primary_file: "PSI-100_Experimental table_SAFFIRE-3.csv"
+    material: "Material"   # v3: fuel_or_material boştu
+    o2: {note: "tabloda O2 YOK; ReadMe (I & III)'te de test bazında O2 yok -> null  # VERIFY (belirsiz, verify #3b)"}
+    flow: {col: "Air Flow", unit: cm_s_in_cell}   # verify #3a: hücre "30 cm/s"
+    row_flags: [flow_conflict_publication]   # v2: B3 – PSI tablosu 30 cm/s, Urban et al. (NTRS 20180005168) "Saffire-III (25 cm/s)"; değer DEĞİŞMEZ
+
+  PSI-159:  # ACME CFI-G, 1194 satir (1015 inverse + 179 normal), gaz
+    fuel_phase: gas
+    primary_files: ["PSI-159_Experimental table_CFI-G_Inverse Flames.csv", "PSI-159_Experimental table_CFI-G_Normal Flames.csv"]
+    o2:
+      inverse: {col: "XO2", unit: fraction, meaning: oxidizer_stream}   # verify #5a: brülörden akan O2/N2 karışımı (ortam DEĞİL)
+      normal:  {cols: ["XO2  before test", "XO2  after test"], unit: fraction, meaning: ambient}   # verify #5a
+    pressure: {col: "approx p (bar)", unit: bar}   # verify #5b: değerler = yuvarlak atm x 1.01325
+    outcome:
+      source: column
+      cols: ["Self -ext or flow term", "Hot ignition", "Cool flame?", "burn time (sec)"]
+      rules:   # v2: A1 – sırayla; ilk eşleşen kazanır, yoksa unknown. Kolon adlarında takma ad listesi (1.2)
+        - when: {col: "Hot ignition", in: ["No", "no"]}
+          any: [{col: "Comments", contains: "direct cool"}, {col: "Cool flame?", startswith: "yes"}]
+          value: cool_flame        # v2: A1 – Final Report "cool flames can be directly ignited" (web_verify_log #2a)
+        - when: {col: "Hot ignition", in: ["No", "no"]}
+          any: [{col: ["Self -ext or flow term", "Self-ext or flow term"], in: ["SE", "FT"]}, {col: "Comments", contains: "hot flame"}]
+          value: unknown
+          flag: outcome_conflict   # v2: Hot ignition=No ama SE/FT ya da 'hot flame' notu -> çelişki (ör. 21106 F4)
+        - when: {col: "Hot ignition", in: ["No", "no"]}
+          value: no_hot_ignition   # v2: '-' yalnız bu satırlarda (web_verify_log #2c)
+        - {col: ["Self -ext or flow term", "Self-ext or flow term"], values: {"SE": extinguished, "FT": sustained}}   # FT = alev komutla akış kesilene kadar yandı (verify #8)
+      flag_rules:   # v2: A2
+        - {col: "Cool flame?", startswith: "yes", flag: cool_flame_observed}
+    note: "Ay uyumu icin en degerli veri (yuksek O2)"
+
+  PSI-10:   # ACME Flame Design, 327 satir (120 inverse + 207 normal), gaz
+    # v3: inverse yakıt türetmesi (C2H4, XC2H4 kolonundan) UYGULANMADI – ön kontrol: Normal Flame 'Fuel' = C2H4 187 + C3H8 20 (tek değer değil).
+    #     Destekleyen kanıt (karar ekipte): PSI-10 Final Report "chamber filled with a mixture of nitrogen and ethylene (C2H4)" (inverse).
+    #     Uygulamak için:  fuel_derived: {inverse: {requires_col: "XC2H4 initial", value: "C2H4 (turetilmis: XC2H4 kolonu)"}}
+    fuel_derived: {inverse: {requires_col: "XC2H4 initial", value: "C2H4 (turetilmis: XC2H4 kolonu)"}}   # v3.1: ekip onayı; satır bazında 'XC2H4 initial' doluysa (120/120 doğrulandı); Normal Flame dosyasına uygulanmaz; bayrak fuel_derived_from_column
+    fuel_phase: gas
+    primary_files: ["PSI-10_Experimental table_Flame Design_Inverse Flame.csv", "PSI-10_Experimental table_Flame Design_Normal Flame.csv"]
+    o2:
+      inverse: {col: "XO2", unit: fraction, meaning: oxidizer_stream}   # verify #5a (PSI-10 Final Report)
+      normal:  {cols: ["XO2 (init)", "XO2 (final)"], unit: fraction, meaning: ambient}
+    pressure: {cols: ["pinit (atm)", "pfinal (atm)", "pmean (atm)"], unit: atm}
+    note: "Soot inception odakli; yangin guvenligine dolayli"
+    special_tokens: {RAMP: flow_ramp}   # v2: B6 – hücre "RAMP" -> değer null, non_numeric yerine flow_ramp (Final Report "step and ramp changes", web_verify_log #11)
+
+  PSI-39:   # CFI, 87 satir, sivi damlacik (soguk alev)
+    fuel_phase: liquid
+    primary_file: "PSI-39_Experimental table_CFI.csv"
+    o2: {col: "Oxygen", unit: fraction}
+    pressure: {col: "Pressure", unit: atm_in_cell}   # verify #4: hücreler "1 atm", "0.5 atm" ...
+    fuel: "Fuel"
+    diluents: ["Nitrogen", "Helium"]
+
+  PSI-20:   # ACME BRE, 18 satir, gaz
+    fuel_phase: gas
+    primary_file: "PSI-20_Experimental table_ACME BRE.csv"
+    o2: {col: "Oxygen Conc (percent)", unit: percent, multivalue: true}   # '21; 26.5; 40'
+    geometry: ["Burner Size (mm)", "Flames Ignited"]   # v3: Flames Ignited (gün toplamı) geometry_note'a
+    geometry_labels: {"Flames Ignited": "Flames Ignited (gün toplamı)"}   # v3
+    fuel: "Fuel Bottle"   # v3: fuel_or_material boştu (ör. '100% C2H4')
+    table_note_from: {col: "Notes", contains: "approximate concentrations"}   # v3: tablo notu tüm satırların geometry_note'una; kanıt BRE Final Report Tablo 1 dipnot 3 (PDF s.24 / basılı s.23)
+    table_note_flag: ignited_level_per_notes   # v3: listelenen O2 seviyeleri = tutuşan testlerin yaklaşık konsantrasyonları; outcome DEĞİŞMEZ
+    row_level: summary   # CSV notu: "Flames Ignited is the number ignited on that day" (gün düzeyi)
+    outcome: {source: column, cols: ["Flames Ignited"]}
+    known_quality_issues:
+      - "O2 hucrelerinde '2100%' ve '3400%' (21.00%/34.00% yazim hatasi olabilir) -> duzeltme YOK, flag"
+      - "v2: A8 – BRE Final Report Tablo 1 (s.23): 19066 (7 Mart 2019) = 34%, 19091 (1 Nisan 2019) = 21% -> ham deger korunur, o2_pct_report turetilir"
+    o2_report_values: {"3400%": 34, "2100%": 21}   # v2: A8 – yalnız o2_pct_report kolonuna; o2_pct_min/max ham kalır; bayrak o2_value_from_report
+    explode_multivalue: o2   # v2: B1 – çok değerli O2 hücresi her seviye için ayrı satır; test_id PSI-20-r<satır>-<n>
+    pressure_map_from_o2:    # v2: B1 – BRE Final Report (s.10-11, s.23): 14.7 psia/21%, 10.2 psia/26.5%, 8.2 psia/34%; 25% ve 40% için eşleme YOK
+      "21": 1.0
+      "26.5": 0.694
+      "34": 0.558
+
+  PSI-107:  # SPICE, 469 satir, gaz
+    fuel_phase: gas
+    primary_file: "PSI-107_Experimental table_Spice.csv"
+    fuel: "Fuel"
+    flow: {col: "Air Rate (cm/s)", unit: cm_s}
+    o2: {note: "tabloda O2 yok; ortam havasi varsayimi VERIFY"}
+    geometry: ["Nozzle (mm)"]
+
+# ------------------------------------------------------------------
+# TIER 2: sadece katalog + metin (harmonize ETERINE alinmaz)
+# ------------------------------------------------------------------
+catalog_only:
+  PSI-21: "tabloda O2/basinc yok (Fuel MFC, N2 MFC, Fuel conc. Range)"
+  PSI-22: "tabloda O2 yok (Mesh Polarity, Fuel Conc)"
+  PSI-23: "'Atmosphere*' kolonu var, notu oku"
+  PSI-47: "2 satir (DAFT)"
+  PSI-101: "SAME-R: duman aerosol; Inlet velocity var, O2 yok; Analyzed Data .xls zaman serileri MVP disi"
+  PSI-102: "SAME: ayni"
+  PSI-106: "12 satir, yalniz Test Date + Fuel Type"
+  PSI-142: "tablo = 'Data Summary Table' (veri aciklamasi + yayin linki); deney verisi degil"
+  PSI-60: "tablo yok (ground modelleme)"
+  PSI-62: "tablo yok (ground modelleme)"
+  PSI-115: "tablo yok; .dat dosyalari indirilmedi"
+  PSI-117: "ground CFD; Analyzed Data CSV'ler (PROCI/MST) ayri incelenebilir"
+  PSI-179: "ASE aerosol ornekleme; MVP disi, 'ISS hava kalitesi' notu olarak kullan"
+
+# Ay uyumu icin kullanilacak kutu (challenge metninden):  O2 >= 30 %  VE  basinc <= 10.2 psi (= 0.694 atm = 70.3 kPa)
+moon_box: {o2_pct_min: 30, pressure_atm_max: 0.694}

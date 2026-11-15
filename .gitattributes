@@ -1,0 +1,5 @@
+# Store frozen v3.1 files byte-for-byte so their sha256 matches MANIFEST.sha256 on every machine.
+data/** -text
+etl/** -text
+MANIFEST.sha256 -text
+web/data/** -text
