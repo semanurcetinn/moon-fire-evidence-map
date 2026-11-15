@@ -99,6 +99,7 @@ async def ask(request: Request):
 
     context = {"counts": body.counts, "nearest": body.nearest, "notes": body.notes, "passages": body.passages}
     user = "Question: " + body.question + "\n\nRetrieval result (JSON):\n" + json.dumps(context, ensure_ascii=False)
+    print(f"[ask] calling {MODEL}...", flush=True)
     try:
         interaction = client.interactions.create(
             model=MODEL,
@@ -106,14 +107,18 @@ async def ask(request: Request):
             input=user,
             response_format={"type": "text", "mime_type": "application/json", "schema": ANSWER_SCHEMA},
             generation_config={"max_output_tokens": 800},
+            timeout=20.0,
         )
     except genai_errors.ClientError as e:
-        # 429 = rate_limited; other 4xx = our own request shape, not the user's fault.
+        print(f"[ask] ClientError code={getattr(e, 'code', None)}: {e}", flush=True)
         return _empty("rate_limited" if getattr(e, "code", None) == 429 else "client_error")
-    except genai_errors.ServerError:
+    except genai_errors.ServerError as e:
+        print(f"[ask] ServerError: {e}", flush=True)
         return _empty("server_error")
-    except Exception:
+    except Exception as e:
+        print(f"[ask] {type(e).__name__}: {e}", flush=True)
         return _empty("connection_error")
+    print("[ask] model call returned", flush=True)
 
     text = getattr(interaction, "output_text", "") or ""
     if not text.strip():
