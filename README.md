@@ -3,7 +3,7 @@
 Built for the NASA Space Apps Challenge 2026 challenge **Flame in Freefall**. An evidence map of NASA's microgravity combustion experiments that ranks investigations by how much they tell us about fire in a Moon-habitat atmosphere, and shows exactly where the evidence stops.
 
 **Live dashboard:** https://semanurcetinn.github.io/moon-fire-evidence-map/
-**Demo slides:** DEMO_LINK
+**Demo slides:** https://semanurcetinn.github.io/moon-fire-evidence-map/demo/MoonFireEvidenceMap_demo.pdf
 
 Space Chillers · NASA Space Apps Challenge 2026 · "Flame in Freefall"
 

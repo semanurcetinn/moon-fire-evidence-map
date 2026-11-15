@@ -109,7 +109,8 @@ async def ask(request: Request):
                 response_mime_type="application/json",
                 response_schema=ANSWER_SCHEMA,
                 max_output_tokens=800,
-                http_options=genai_types.HttpOptions(timeout=20000),  # milliseconds
+                thinking_config=genai_types.ThinkingConfig(thinking_budget=0),  # plain extraction task, no reasoning needed
+                http_options=genai_types.HttpOptions(timeout=25000),  # milliseconds; safety margin above the no-thinking latency
             ),
         )
     except genai_errors.ClientError as e:

@@ -7,7 +7,7 @@ Moon Fire Evidence Map
 Moon Fire Evidence Map turns NASA's scattered microgravity combustion data into one evidence map for fire safety in crewed habitats. We harmonized 12 Physical Sciences Informatics (PSI) investigations into one table of 1,805 test rows without correcting any value, graded every row by evidence quality, and placed it by oxygen and pressure. An Atmosphere Journey walks from Earth's air to the expected Moon habitat (oxygen at or above 30 %, at most 10.2 psi) to a spacesuit and counts the recorded tests near each. The finding: 87 rows lie in the Moon box, only 20 of them clean, and no solid-fuel test in the PSI tables goes above 22.7 % oxygen.
 
 ## Link to Project Demo
-DEMO_LINK
+https://semanurcetinn.github.io/moon-fire-evidence-map/demo/MoonFireEvidenceMap_demo.pdf
 
 ## Link to Final Project
 https://github.com/semanurcetinn/moon-fire-evidence-map
