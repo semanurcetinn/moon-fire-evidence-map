@@ -48,7 +48,7 @@
   function fmt(n) { return Number(n).toLocaleString("en-US"); }
   function r1(x) { return Math.round(x * 10) / 10; }
   function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
-  function ease(x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; }
+  function ease(x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
   function atm(psi) { return psi / PSI_PER_ATM; }
   function toX(o2) { return pad.l + (o2 - X_MIN) / (X_MAX - X_MIN) * (W - pad.l - pad.r); }
   function toY(p) {
@@ -324,9 +324,9 @@
   function play() {
     stop(); var token = playToken; $("jr-play").textContent = "❚❚ Pause"; $("jr-play").setAttribute("aria-pressed", "true");
     (async function () {
-      await tween(0, 600); if (!(await wait(2200))) return;
-      await tween(0.5, 3200); if (token !== playToken) return; if (!(await wait(3200))) return;
-      await tween(1, 3200); if (token !== playToken) return; await wait(2200);
+      await tween(0, 500); if (!(await wait(1500))) return;
+      await tween(0.5, 2600); if (token !== playToken) return; if (!(await wait(2400))) return;
+      await tween(1, 2600); if (token !== playToken) return; await wait(1800);
       if (token === playToken) stop();
     })();
   }
@@ -336,28 +336,52 @@
     tween(s.t, 900);
   }
 
-  // ---- judge tour (90 s) ----------------------------------------------------------------------
-  var tourTimer = 0, tourStep = -1;
+  // ---- guided tour ------------------------------------------------------------------------------
+  // Reader-paced: no timer pushes the visitor forward. Each step scrolls smoothly, marks its
+  // section and explains it in one sentence; the journey plays only on the step that is about it.
+  var tourStep = -1;
   var TOUR = [
-    ["journey", "1 / 4 · The Atmosphere Journey. Move the probe: every dot is a recorded test row, and the window shows how many tests exist near each atmosphere."],
-    ["map-section", "2 / 4 · The Evidence Map. The green box is the expected Moon habitat atmosphere. Colour is the outcome, opacity is how clean the row is."],
-    ["ranking-section", "3 / 4 · The ranking. Investigations scored by how much test-level evidence they give for that atmosphere. Coverage, not scientific merit."],
-    ["stops-section", "4 / 4 · Where the evidence stops. No solid-fuel test reaches 30 % O₂, and most rows record no outcome."]
+    ["journey", "Every dot is one recorded test, placed by the oxygen and pressure it was run at. Press play and the probe walks from Earth's air to the expected Moon habitat to a spacesuit, counting the real tests near each."],
+    ["map-section", "The same rows as a full map. The green box is the Moon habitat atmosphere; colour is what happened in the test, and faded points are rows we trust less. Filter on the left to interrogate it."],
+    ["ranking-section", "The twelve harmonized investigations, ranked by how much test-level evidence they give for that atmosphere. The score measures data coverage, not scientific merit, and every part of it is shown."],
+    ["stops-section", "The honest part. No solid-fuel test in the PSI tables reaches 30 % oxygen, two thirds of the rows record no outcome, and a script checks every number we publish against the frozen data."]
   ];
+  function tourRender(i) {
+    $("tour-step").textContent = "Step " + (i + 1) + " of " + TOUR.length;
+    $("tour-dots").innerHTML = TOUR.map(function (_, k) { return '<i class="' + (k === i ? "on" : "") + '"></i>'; }).join("");
+    $("tour-text").textContent = TOUR[i][1];
+    $("tour-prev").disabled = i === 0;
+    $("tour-next").textContent = i === TOUR.length - 1 ? "Finish" : "Next";
+  }
   function tourShow(i) {
-    clearTimeout(tourTimer);
     var box = $("tour-box");
     document.querySelectorAll(".tour-focus").forEach(function (e) { e.classList.remove("tour-focus"); });
-    if (i >= TOUR.length) { box.hidden = true; tourStep = -1; return; }
+    if (i < 0 || i >= TOUR.length) {                       // leave: fade out, then hide
+      tourStep = -1;
+      if (reduce) { box.hidden = true; return; }
+      box.dataset.enter = "1";
+      setTimeout(function () { if (tourStep === -1) { box.hidden = true; delete box.dataset.enter; } }, 320);
+      return;
+    }
+    var first = tourStep === -1;
     tourStep = i;
     var el = $(TOUR[i][0]);
-    if (el) { el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); el.classList.add("tour-focus"); }
-    $("tour-text").textContent = TOUR[i][1];
-    box.hidden = false;
-    $("tour-next").textContent = i === TOUR.length - 1 ? "Finish" : "Next";
-    tourTimer = setTimeout(function () { tourShow(i + 1); }, 22000);
+    if (el) {
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      // let the scroll settle before the outline draws attention, so the two do not fight
+      setTimeout(function () { if (tourStep === i) el.classList.add("tour-focus"); }, reduce ? 0 : 260);
+    }
+    tourRender(i);
+    if (first && !reduce) {                                // fade the panel in once
+      box.dataset.enter = "1"; box.hidden = false;
+      requestAnimationFrame(function () { requestAnimationFrame(function () { delete box.dataset.enter; }); });
+    } else {
+      box.hidden = false;
+    }
+    if (i === 0 && !reduce) play();                        // the journey plays only on its own step
+    else if (i !== 0) stop();
   }
-  function tourStart() { tourShow(0); if (!reduce) play(); }
+  function tourStart() { if (tourStep === -1) tourShow(0); }
 
   // ---- boot -----------------------------------------------------------------------------------
   var solidMax = 0;
@@ -385,7 +409,14 @@
     cv.addEventListener("pointerup", function () { dragging = false; });
     $("tour-start").addEventListener("click", tourStart);
     $("tour-next").addEventListener("click", function () { tourShow(tourStep + 1); });
-    $("tour-close").addEventListener("click", function () { tourShow(99); });
+    $("tour-prev").addEventListener("click", function () { tourShow(tourStep - 1); });
+    $("tour-close").addEventListener("click", function () { tourShow(-1); });
+    document.addEventListener("keydown", function (e) {
+      if (tourStep < 0) return;
+      if (e.key === "Escape") tourShow(-1);
+      else if (e.key === "ArrowRight") tourShow(tourStep + 1);
+      else if (e.key === "ArrowLeft" && tourStep > 0) tourShow(tourStep - 1);
+    });
     if (location.hash === "#tour") setTimeout(tourStart, 600);
     window.Journey = { goto: goto, setT: setT, stats: function () { return stats; } };
   }).catch(function (e) {
