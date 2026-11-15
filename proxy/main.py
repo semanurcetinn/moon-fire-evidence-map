@@ -107,7 +107,7 @@ async def ask(request: Request):
             input=user,
             response_format={"type": "text", "mime_type": "application/json", "schema": ANSWER_SCHEMA},
             generation_config={"max_output_tokens": 800},
-            timeout=20.0,
+            timeout=55.0,
         )
     except genai_errors.ClientError as e:
         print(f"[ask] ClientError code={getattr(e, 'code', None)}: {e}", flush=True)
