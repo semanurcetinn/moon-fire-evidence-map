@@ -195,17 +195,11 @@
     $("plot-count").textContent = "showing " + fmtInt(sel.length) + " of " + fmtInt(app.facts.plottable);
     var data = staticTraces().concat(dataTraces(sel));
     var lay = layout();
-    var zoomBox = state.box === "box_edge" || state.box === "in_box" || state.box === "edge";
-    if (zoomBox) {   // zoom towards the Moon habitat box
-      lay.xaxis.range = [app.meta.moon_box.o2_min_pct - 3, X_RANGE[1]];
-      lay.yaxis.range = [Math.log10(Y_MIN), Math.log10(1.0)];
-      lay.yaxis2.range = [Math.log10(Y_MIN * 14.696), Math.log10(1.0 * 14.696)];
-    }
+    // The scale never moves, not even for the Moon-box filter: a reader who hides rows should see
+    // the box shrink against the same axes, not a redrawn plane. Zooming is left to the visitor.
     var drawLine = firstPlot && !REDUCE;
     if (drawLine) data[2] = Object.assign({}, data[2], { y: [Y_MIN, Y_MIN * 1.001] });   // solid-fuel line starts collapsed
-    // uirevision keeps the view steady across filter changes; it changes only when the Moon-box
-    // view is entered or left, which is the one case where the scale is meant to move.
-    lay.uirevision = zoomBox ? "box" : "full";
+    lay.uirevision = "map";   // a filter change must never re-scale the axes
     var p = Plotly.react("plot", data, lay, { responsive: true, displaylogo: false,
       modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"], toImageButtonOptions: { filename: "moon-fire-evidence-map" } });
     if (drawLine && p && p.then) p.then(function () {
