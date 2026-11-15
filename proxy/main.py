@@ -17,7 +17,7 @@ from collections import defaultdict, deque
 from pathlib import Path
 
 from google import genai
-from google.genai import errors as genai_errors
+from google.genai import errors as genai_errors, types as genai_types
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -101,13 +101,16 @@ async def ask(request: Request):
     user = "Question: " + body.question + "\n\nRetrieval result (JSON):\n" + json.dumps(context, ensure_ascii=False)
     print(f"[ask] calling {MODEL}...", flush=True)
     try:
-        interaction = client.interactions.create(
+        response = client.models.generate_content(
             model=MODEL,
-            system_instruction=SYSTEM,
-            input=user,
-            response_format={"type": "text", "mime_type": "application/json", "schema": ANSWER_SCHEMA},
-            generation_config={"max_output_tokens": 800},
-            timeout=55.0,
+            contents=user,
+            config=genai_types.GenerateContentConfig(
+                system_instruction=SYSTEM,
+                response_mime_type="application/json",
+                response_schema=ANSWER_SCHEMA,
+                max_output_tokens=800,
+                http_options=genai_types.HttpOptions(timeout=20000),  # milliseconds
+            ),
         )
     except genai_errors.ClientError as e:
         print(f"[ask] ClientError code={getattr(e, 'code', None)}: {e}", flush=True)
@@ -120,7 +123,7 @@ async def ask(request: Request):
         return _empty("connection_error")
     print("[ask] model call returned", flush=True)
 
-    text = getattr(interaction, "output_text", "") or ""
+    text = getattr(response, "text", "") or ""
     if not text.strip():
         return _empty("blocked_or_empty")
     m = _JSON_RE.search(text)
