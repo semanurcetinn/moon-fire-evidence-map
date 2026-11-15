@@ -171,8 +171,11 @@
   // ---- drawing ---------------------------------------------------------------------------
   function drawScene(time) {
     var g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, "#0a0f1e"); g.addColorStop(1, "#151c36");
+    g.addColorStop(0, "#070b16"); g.addColorStop(0.55, "#101831"); g.addColorStop(1, "#161f3d");
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    var vig = ctx.createRadialGradient(W * 0.5, H * 0.45, Math.min(W, H) * 0.2, W * 0.5, H * 0.5, Math.max(W, H) * 0.75);
+    vig.addColorStop(0, "rgba(90,130,210,0.10)"); vig.addColorStop(1, "rgba(0,0,0,0.38)");
+    ctx.fillStyle = vig; ctx.fillRect(0, 0, W, H);
     stars.forEach(function (s) { ctx.fillStyle = "rgba(255,255,255," + (s[3] + (reduce ? 0 : 0.08 * Math.sin(time / 900 + s[0])) ) + ")"; ctx.fillRect(s[0], s[1], s[2], s[2]); });
 
     var plotL = pad.l, plotR = W - pad.r, plotT = pad.t, plotB = H - pad.b;
@@ -227,10 +230,19 @@
     // stations
     STATIONS.forEach(function (s) {
       var q = pathAt(s.t), x = toX(q.o2), y = toY(q.p);
-      ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.fillStyle = "#0a0f1e"; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(x, y, 5, 0, 6.2832); ctx.fill(); ctx.stroke(); ctx.lineWidth = 1;
-      ctx.fillStyle = "#e8eaed"; ctx.textBaseline = "bottom"; ctx.textAlign = s.id === "suit" ? "right" : "left";
-      ctx.fillText(s.name.split(",")[0], x + (s.id === "suit" ? -9 : 9), y - 6);
+      ctx.fillStyle = "rgba(10,15,30,0.85)"; ctx.beginPath(); ctx.arc(x, y, 7.5, 0, 6.2832); ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.9)"; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(x, y, 5.5, 0, 6.2832); ctx.stroke();
+      ctx.fillStyle = "rgba(255,255,255,0.9)"; ctx.beginPath(); ctx.arc(x, y, 1.9, 0, 6.2832); ctx.fill();
+      ctx.lineWidth = 1;
+      var label = s.name.split(",")[0], lx = x + (s.id === "suit" ? -11 : 11);
+      ctx.textBaseline = "bottom"; ctx.textAlign = s.id === "suit" ? "right" : "left";
+      ctx.font = "600 11px system-ui, sans-serif";
+      var lw = ctx.measureText(label).width;
+      ctx.fillStyle = "rgba(8,12,24,0.72)";
+      ctx.fillRect(s.id === "suit" ? lx - lw - 5 : lx - 4, y - 21, lw + 9, 15);
+      ctx.fillStyle = "#eef2f8"; ctx.fillText(label, lx, y - 8);
+      ctx.font = "11px system-ui, sans-serif";
     });
     // probe with glow
     var px = toX(P.o2), py = toY(P.p);

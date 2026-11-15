@@ -147,13 +147,13 @@
       return {
         type: "scatter", mode: "markers", name: o[1], x: pts.map(function (r) { return r._x; }), y: pts.map(function (r) { return r._y; }),
         text: pts.map(hoverText), hovertemplate: "%{text}<extra></extra>",
-        marker: {
+        marker: pts.length ? {
           color: o[2], size: 8,
           symbol: pts.map(function (r) { return PHASE[r.phase].symbol + (r.p_assumed ? "-open" : ""); }),
           opacity: pts.map(function (r) { return GRADES[r.grade].opacity; }),
           line: { width: pts.map(function (r) { return r.p_assumed ? 1.6 : 0.5; }),
                   color: pts.map(function (r) { return r.p_assumed ? o[2] : bg; }) }
-        },
+        } : { color: o[2], size: 8 },
         showlegend: false
       };
     });
@@ -167,10 +167,12 @@
       margin: { l: 58, r: 58, t: 10, b: 46 }, paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
       font: { family: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", size: 12, color: fg },
       hovermode: "closest", hoverlabel: { align: "left" }, dragmode: "zoom",
-      xaxis: { title: { text: "Oxygen, % (effective)" }, range: X_RANGE, gridcolor: grid, zeroline: false, ticksuffix: "", dtick: 10 },
-      yaxis: { title: { text: "Pressure, atm (log)" }, type: "log", range: [L(Y_MIN), L(Y_MAX)], gridcolor: grid,
+      // The axes are the frame of the argument (Moon box, 22.7 % line), so they are fixed:
+      // a filter must change which points are shown, never the scale they are read against.
+      xaxis: { title: { text: "Oxygen, % (effective)" }, range: X_RANGE.slice(), autorange: false, gridcolor: grid, zeroline: false, ticksuffix: "", dtick: 10 },
+      yaxis: { title: { text: "Pressure, atm (log)" }, type: "log", range: [L(Y_MIN), L(Y_MAX)], autorange: false, gridcolor: grid,
                tickvals: [0.5, 0.694, 1, 2, 3, 5], ticktext: ["0.5", "0.694", "1", "2", "3", "5"] },
-      yaxis2: { title: { text: "psi" }, type: "log", overlaying: "y", side: "right", range: [L(Y_MIN * 14.696), L(Y_MAX * 14.696)],
+      yaxis2: { title: { text: "psi" }, type: "log", overlaying: "y", side: "right", range: [L(Y_MIN * 14.696), L(Y_MAX * 14.696)], autorange: false,
                 tickvals: [5, 7.35, 10.2, 14.7, 30, 44, 73.5], ticktext: ["5", "7.35", "10.2", "14.7", "30", "44", "73.5"], showgrid: false },
       annotations: [
         { x: mb.o2_min_pct + 0.8, y: L(mb.p_max_atm * 0.93), xanchor: "left", yanchor: "top", showarrow: false,
@@ -193,14 +195,17 @@
     $("plot-count").textContent = "showing " + fmtInt(sel.length) + " of " + fmtInt(app.facts.plottable);
     var data = staticTraces().concat(dataTraces(sel));
     var lay = layout();
-    if (state.box === "box_edge" || state.box === "in_box" || state.box === "edge") {   // zoom towards the Moon habitat box
+    var zoomBox = state.box === "box_edge" || state.box === "in_box" || state.box === "edge";
+    if (zoomBox) {   // zoom towards the Moon habitat box
       lay.xaxis.range = [app.meta.moon_box.o2_min_pct - 3, X_RANGE[1]];
       lay.yaxis.range = [Math.log10(Y_MIN), Math.log10(1.0)];
       lay.yaxis2.range = [Math.log10(Y_MIN * 14.696), Math.log10(1.0 * 14.696)];
     }
     var drawLine = firstPlot && !REDUCE;
     if (drawLine) data[2] = Object.assign({}, data[2], { y: [Y_MIN, Y_MIN * 1.001] });   // solid-fuel line starts collapsed
-    if (!REDUCE && !firstPlot) lay.transition = { duration: 400, easing: "cubic-in-out" };
+    // uirevision keeps the view steady across filter changes; it changes only when the Moon-box
+    // view is entered or left, which is the one case where the scale is meant to move.
+    lay.uirevision = zoomBox ? "box" : "full";
     var p = Plotly.react("plot", data, lay, { responsive: true, displaylogo: false,
       modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"], toImageButtonOptions: { filename: "moon-fire-evidence-map" } });
     if (drawLine && p && p.then) p.then(function () {
