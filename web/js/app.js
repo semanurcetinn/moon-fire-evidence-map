@@ -185,12 +185,37 @@
     };
   }
 
+  // SPEC_03 §4: map transitions. Off when the visitor prefers reduced motion.
+  var REDUCE = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var firstPlot = true;
   function renderPlot() {
     var sel = plotted.filter(function (r) { return passes(r, state); });
     $("plot-count").textContent = "showing " + fmtInt(sel.length) + " of " + fmtInt(app.facts.plottable);
     var data = staticTraces().concat(dataTraces(sel));
-    Plotly.react("plot", data, layout(), { responsive: true, displaylogo: false,
+    var lay = layout();
+    if (state.box === "box_edge" || state.box === "in_box" || state.box === "edge") {   // zoom towards the Moon habitat box
+      lay.xaxis.range = [app.meta.moon_box.o2_min_pct - 3, X_RANGE[1]];
+      lay.yaxis.range = [Math.log10(Y_MIN), Math.log10(1.0)];
+      lay.yaxis2.range = [Math.log10(Y_MIN * 14.696), Math.log10(1.0 * 14.696)];
+    }
+    var drawLine = firstPlot && !REDUCE;
+    if (drawLine) data[2] = Object.assign({}, data[2], { y: [Y_MIN, Y_MIN * 1.001] });   // solid-fuel line starts collapsed
+    if (!REDUCE && !firstPlot) lay.transition = { duration: 400, easing: "cubic-in-out" };
+    var p = Plotly.react("plot", data, lay, { responsive: true, displaylogo: false,
       modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"], toImageButtonOptions: { filename: "moon-fire-evidence-map" } });
+    if (drawLine && p && p.then) p.then(function () {
+      Plotly.animate("plot", { data: [{ y: [Y_MIN, Y_MAX] }], traces: [2] },
+        { transition: { duration: 900, easing: "cubic-out" }, frame: { duration: 900, redraw: false } });
+    });
+    firstPlot = false;
+  }
+  function pulse() {   // SPEC_03 §4: the selected investigation's points pulse once
+    if (REDUCE || !window.Plotly) return;
+    var el = $("plot"); if (!el || !el.data) return;
+    var idx = []; el.data.forEach(function (t, i) { if (t.mode === "markers") idx.push(i); });
+    Plotly.restyle(el, { "marker.size": 13 }, idx).then(function () {
+      setTimeout(function () { Plotly.restyle(el, { "marker.size": 8 }, idx); }, 600);
+    });
   }
 
   // ---- header -------------------------------------------------------------------
@@ -358,7 +383,43 @@
     ];
     $("stops").innerHTML = boxes.map(function (b) {
       return '<div class="card"><b class="big">' + esc(b[0]) + "</b><p>" + esc(b[1]) + "</p></div>";
-    }).join("");
+    }).join("") + '<div class="card" id="checks-card" hidden></div>';
+    // SPEC_02 §4: visible checker card, from scripts/check_numbers.py --write-summary
+    fetch("data/checks.json").then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (c) {
+        var ok = c.mismatches === 0 && c.facts_ok;
+        var el = $("checks-card");
+        el.innerHTML = '<b class="big">' + fmtInt(c.numbers_checked) + " numbers checked · " + fmtInt(c.mismatches) + " mismatches</b>" +
+          "<p>Every number in the published texts is checked against the dataset by <code>scripts/check_numbers.py</code>" +
+          (c.facts_ok ? "; headline facts recomputed independently" : "; headline facts check FAILED") +
+          ". Last run " + esc(String(c.run_utc).slice(0, 10)) + ".</p>";
+        if (!ok) el.style.borderTopColor = "#C62828";
+        el.hidden = false;
+      }).catch(function () { /* no checks.json: card stays hidden */ });
+  }
+
+  // SPEC_02 §1: how the tests of one investigation differ and how they are the same
+  var FIELD_LABEL = { o2_pct: "O₂", pressure_atm: "pressure", flow_cm_s: "flow", fuel: "fuel" };
+  function r1(x) { return Math.round(x * 10) / 10; }
+  function r2(x) { return Math.round(x * 100) / 100; }
+  function variablesHtml(v) {
+    if (!v) return "";
+    var varied = (v.varied || []).map(function (x) {
+      if (x.field === "fuel") return x.distinct + " fuels or materials";
+      var u = x.unit === "%" ? " %" : " " + x.unit, f = x.unit === "atm" ? r2 : r1;
+      return FIELD_LABEL[x.field] + " " + f(x.min) + "–" + f(x.max) + u + (x.note ? " (" + x.note + ")" : "");
+    });
+    var constant = (v.constant || []).map(function (x) {
+      if (x.field === "fuel") return "fuel " + displayFuel(x.value);
+      var u = x.unit === "%" ? " %" : " " + x.unit, f = x.unit === "atm" ? r2 : r1;
+      return FIELD_LABEL[x.field] + " " + f(x.value) + u + (x.note ? " (" + x.note + ")" : "");
+    });
+    var missing = (v.missing || []).map(function (f) { return FIELD_LABEL[f] || f; });
+    var counts = fmtInt(v.test_rows) + " test rows" + (v.summary_rows ? ", " + fmtInt(v.summary_rows) + " summary rows" : "") +
+      (v.duplicate_rows ? ", " + fmtInt(v.duplicate_rows) + " exact duplicates" : "");
+    return "<dt>Variables</dt><dd>Varied: " + esc(varied.join(", ") || "—") + " · Constant: " + esc(constant.join(", ") || "—") +
+      " · Not in the table: " + esc(missing.join(", ") || "—") + " <span class=\"muted\">(" + esc(counts) + ")</span>" +
+      ((v.geometry_values || []).length ? "<br>Geometry: " + esc(v.geometry_values.join(" · ")) : "") + "</dd>";
   }
 
   // ---- AI insights (S4 data, S3 §6) ---------------------------------------------
@@ -379,18 +440,68 @@
     }).join("");
     $("ai-section").hidden = false;
   }
+  // SPEC_04: research cards (objective / sample / measurements); a field is shown only after team review
+  var cards = null;
+  function cardFieldsHtml(c) {
+    if (!c || !c.reviewed) return "";
+    var h = "";
+    if (c.objective) h += "<dt>Objective</dt><dd>" + esc(c.objective) + "</dd>";
+    h += "<dt>Sample / burner</dt><dd>" + (c.sample_or_burner ? esc(c.sample_or_burner) : '<span class="muted">not recorded in the sources we used</span>') + "</dd>";
+    h += "<dt>What was measured</dt><dd>" + ((c.measurements || []).length ? esc(c.measurements.join(", ")) : '<span class="muted">not recorded in the sources we used</span>') + "</dd>";
+    return h;
+  }
+  function cardSourcesHtml(c, v) {
+    var links = ['<a href="' + esc(v.doi_url) + '" target="_blank" rel="noopener">Dataset DOI</a>'];
+    if (c && c.reviewed) (c.sources || []).forEach(function (s) {
+      if (s.url && s.url !== v.doi_url) links.push('<a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) + "</a>");
+      else if (!s.url) links.push(esc(s.label));
+    });
+    return '<p class="sources">' + links.join(" · ") + "</p>";
+  }
   function renderInvCard(id) {
     var card = $("inv-card");
     var e = insights && insights.investigations && insights.investigations[id];
-    if (!id || !e) { card.hidden = true; card.innerHTML = ""; return; }
     var v = invById[id] || {};
+    var c = cards && cards[id];
+    if (!id || (!e && !v.variables)) { card.hidden = true; card.innerHTML = ""; return; }
     card.innerHTML = "<h3>" + esc(v.acronym || id) + ' <span class="psi muted">' + esc(id) + "</span></h3>" +
-      '<p class="ai-label">Summary text prepared with an SI assistant from the frozen dataset · every number machine-checked · reviewed and approved by the team</p>' +
-      "<dl><dt>What it measured</dt><dd>" + esc(e.summary) + "</dd>" +
-      "<dt>Fire-safety relevance</dt><dd>" + esc(e.fire_safety_relevance) + "</dd>" +
-      "<dt>Limits of this table</dt><dd>" + esc(e.limits) + "</dd></dl>" +
-      '<p class="sources"><a href="' + esc(v.doi_url) + '" target="_blank" rel="noopener">Dataset DOI</a></p>';
+      "<dl>" + cardFieldsHtml(c) + variablesHtml(v.variables) + "</dl>" +
+      (e ? '<p class="ai-label">Summary text prepared with an SI assistant from the frozen dataset · every number machine-checked · reviewed and approved by the team</p>' +
+        "<dl><dt>What it measured</dt><dd>" + esc(e.summary) + "</dd>" +
+        "<dt>Fire-safety relevance</dt><dd>" + esc(e.fire_safety_relevance) + "</dd>" +
+        "<dt>Limits of this table</dt><dd>" + esc(e.limits) + "</dd></dl>" : "") +
+      cardSourcesHtml(c, v);
     card.hidden = false;
+  }
+  // SPEC_04 §4–5: "Why oxygen matters" strip and "On Earth" cards (challenge description only)
+  function loadEarth() {
+    return fetch("data/earth_context.json").then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) {
+        var src = d.source ? '<p class="sources">Source: <a href="' + esc(d.source.url) + '" target="_blank" rel="noopener">' + esc(d.source.label) + "</a></p>" : "";
+        $("why-cards").innerHTML = (d.context || []).map(function (c) {
+          return '<article class="card"><h4>' + esc(c.title) + "</h4><p>" + esc(c.text) + "</p>" + src + "</article>";
+        }).join("");
+        $("earth-cards").innerHTML = (d.earth || []).map(function (c) {
+          var onMap = (c.related || []).filter(function (id) { var v = invById[id]; return v && v.rank != null; });
+          var rel = !c.related_label ? "" : onMap.length
+            ? '<p><button type="button" class="btn earth-rel" data-psi="' + esc(onMap.join(",")) + '">' + esc(c.related_label) + "</button></p>"
+            : '<p class="muted small">' + esc(c.related_label) + "</p>";
+          return '<article class="card"><h4>' + esc(c.title) + "</h4><p>" + esc(c.text) + "</p>" + rel + src + "</article>";
+        }).join("");
+        Array.prototype.forEach.call(document.querySelectorAll(".earth-rel"), function (b) {
+          b.addEventListener("click", function () {
+            applyFilter({ psi: b.dataset.psi.split(",") });
+            $("map-section").scrollIntoView({ behavior: REDUCE ? "auto" : "smooth", block: "start" });
+          });
+        });
+        $("why-oxygen").hidden = !(d.context || []).length;
+        $("on-earth").hidden = !(d.earth || []).length;
+      }).catch(function () { /* sections stay hidden */ });
+  }
+  function loadCards() {
+    return fetch("data/investigation_cards.json").then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) { cards = d && d.cards ? d.cards : null; })
+      .catch(function () { cards = null; });
   }
   function loadInsights() {
     return fetch("data/insights.json").then(function (r) {
@@ -408,7 +519,8 @@
 
   // ---- "Ask the evidence" hook (S4B; logic in js/rag.js) -------------------------
   var ASK_EXAMPLES = ["clean tests in the Moon habitat box", "solid fuel tests above 30% oxygen",
-    "FLEX tests at 30% oxygen or more", "what does not recorded mean"];
+    "FLEX tests at 30% oxygen or more", "what does not recorded mean",
+    "what was measured in BASS?", "how do FLEX tests differ from each other?"];
   function initAsk() {
     var sec = $("ask-evidence");
     if (sec.dataset.enabled !== "true") return;
@@ -432,6 +544,43 @@
     };
     s.onerror = function () { console.warn("[app] Ask the evidence disabled: js/rag.js not found"); };
     document.body.appendChild(s);
+  }
+  // SPEC_05: optional live answer through proxy/ (Cloud Run + Vertex AI). Off while PROXY_URL is empty.
+  function proxyUrl() { var c = window.MFEM_CONFIG || {}; return (c.PROXY_URL || "").replace(/\/+$/, ""); }
+  var liveSeq = 0;
+  function askLive(q, res) {
+    var box = $("ask-live"), url = proxyUrl();
+    box.hidden = true; box.innerHTML = "";
+    if (!url || !window.fetch) return;
+    var my = ++liveSeq;
+    var body = { question: q.slice(0, 300),
+      counts: res.rows ? { count: res.rows.count, total_considered: res.rows.total_considered, by_outcome: res.rows.by_outcome,
+        by_grade: res.rows.by_grade, by_psi: res.rows.by_psi } : {},
+      nearest: {}, notes: res.notes || [],
+      passages: (res.passages || []).slice(0, 5).map(function (p) { return { id: p.id, title: p.title, text: p.text, evidence: p.evidence }; }) };
+    var p = res.parsed || {};
+    if (window.RAG && RAG.nearest && p.o2_min != null && (p.p_max_atm != null || p.p_min_atm != null)) {
+      var n = RAG.nearest({ o2: p.o2_max != null ? (p.o2_min + p.o2_max) / 2 : p.o2_min, p_atm: p.p_max_atm != null ? p.p_max_atm : p.p_min_atm, k: 5 });
+      body.nearest = { exact: n.exact, outcome_counts: n.outcome_counts, grade_counts: n.grade_counts, notes: n.notes };
+    }
+    var ctl = window.AbortController ? new AbortController() : null;
+    var t = setTimeout(function () { if (ctl) ctl.abort(); }, 8000);
+    box.hidden = false; box.innerHTML = '<p class="muted small">Writing a short answer from the counts and texts below…</p>';
+    fetch(url + "/ask", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (a) {
+        if (my !== liveSeq) return;
+        if (!a.checked || !a.answer) {
+          box.innerHTML = '<p class="muted small">SI answer unverified, showing retrieved texts only.</p>';
+          return;
+        }
+        box.innerHTML = "<h4>SI answer</h4><p>" + esc(a.answer) + "</p>" +
+          ((a.caveats || []).length ? '<p class="muted small">' + esc(a.caveats.join(" · ")) + "</p>" : "") +
+          '<p class="ai-label">SI-generated answer from the counts and texts below · numbers verified against the dataset</p>';
+        $("ask-footnote").textContent = "Counts are computed in your browser; the written answer is produced on request and checked against those counts.";
+      })
+      .catch(function () { if (my === liveSeq) { box.hidden = true; box.innerHTML = ""; } })
+      .then(function () { clearTimeout(t); });
   }
   function ask(q) {
     if (!q || !q.trim()) return;
@@ -457,6 +606,7 @@
     var ns = res.notes || [];
     nb.innerHTML = ns.map(function (n) { return '<div class="note-item">' + esc(n) + "</div>"; }).join("");
     nb.hidden = !ns.length;
+    askLive(q, res);
   }
 
   // ---- footer (S3 §7) -------------------------------------------------------------
@@ -494,6 +644,7 @@
       state.psi = same ? [] : [id];
       syncToUI(); update();
       renderInvCard(same ? null : id);
+      if (!same) setTimeout(pulse, 450);
       if (!same) $("map-section").scrollIntoView({ behavior: "smooth", block: "start" });
     }
     tb.addEventListener("click", function (e) { if (e.target.tagName === "A") return; var tr = e.target.closest("tr"); if (tr) pick(tr); });
@@ -532,6 +683,8 @@
     renderStops();
     renderFooter();
     window.App = { applyFilter: applyFilter, countPlotted: countPlotted, getState: function () { return JSON.parse(JSON.stringify(state)); } };
+    loadCards();
+    loadEarth();
     loadInsights().then(initAsk);
     if (typeof Plotly === "undefined") return fail("The chart library could not be loaded. Check your connection and reload.");
     update();

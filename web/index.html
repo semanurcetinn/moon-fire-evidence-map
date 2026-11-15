@@ -44,6 +44,11 @@
       </aside>
     </div>
   </section>
+  <section id="why-oxygen" aria-labelledby="why-title" hidden>
+    <div class="section-head"><h2 id="why-title">Why oxygen matters</h2></div>
+    <div class="cards" id="why-cards"></div>
+  </section>
+
   <section id="map-section" aria-labelledby="map-title">
     <div class="section-head">
       <h2 id="map-title">Evidence Map</h2>
@@ -100,6 +105,11 @@
     <div class="stops" id="stops"></div>
   </section>
 
+  <section id="on-earth" aria-labelledby="earth-title" hidden>
+    <div class="section-head"><h2 id="earth-title">What this research gives back on Earth</h2></div>
+    <div class="cards" id="earth-cards"></div>
+  </section>
+
   <section id="ai-section" aria-labelledby="ai-title" hidden>
     <div class="section-head">
       <h2 id="ai-title">Insights</h2>
@@ -116,9 +126,10 @@
       </form>
       <div id="ask-examples" class="ask-examples"></div>
       <div id="ask-rows" class="ask-block" hidden></div>
+      <div id="ask-live" class="ask-block card" hidden></div>
       <div id="ask-passages" class="ask-block" hidden></div>
       <div id="ask-notes" class="ask-block" hidden></div>
-      <p class="muted small">Answers are retrieved from the frozen dataset and reviewed texts. Counts are computed live. No text is generated at query time.</p>
+      <p class="muted small" id="ask-footnote">Answers are retrieved from the frozen dataset and reviewed texts. Counts are computed live. No text is generated at query time.</p>
     </section>
 
     <div class="cards" id="global-cards"></div>
@@ -131,6 +142,7 @@
   <div class="wrap" id="footer"></div>
 </footer>
 
+<script src="config.js"></script>
 <script src="js/app.js"></script>
 <div id="tour-box" class="tour-box" role="dialog" aria-label="Guided tour" hidden>
   <p id="tour-text"></p>

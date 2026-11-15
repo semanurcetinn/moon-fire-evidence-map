@@ -1,0 +1,23 @@
+{
+  "note": "Context and On Earth cards. Every sentence restates the NASA Space Apps 2026 Flame in Freefall challenge description; no other source is used.",
+  "source": {"label": "Flame in Freefall challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+  "context": [
+    {"id": "apollo1", "title": "Apollo 1, 1967",
+     "text": "The crew died in a pre-launch test when fire erupted in their oxygen-filled spacecraft. This is why the flammability of cabin materials is tested."},
+    {"id": "mir", "title": "Mir space station",
+     "text": "A multinational crew survived a fire caused by an oxygen generator failure. This is why detection and suppression matter."},
+    {"id": "moon-air", "title": "Moon base atmosphere",
+     "text": "A Moon base and pressurized rovers are expected to run at 30 % oxygen or more and 10.2 psi or less, to shorten pre-breathing for lunar excursions. That is more than a 40 % increase in oxygen concentration over Earth's air, making materials much more flammable."}
+  ],
+  "earth": [
+    {"id": "water-mist", "title": "Fine-water-mist extinguishers",
+     "text": "According to the challenge description, fine-water-mist extinguishers developed for use on the ISS have practical applications on Earth.",
+     "related": ["PSI-69", "PSI-68"], "related_label": "Fire suppression in this map: FLEX and FLEX-2"},
+    {"id": "smoke-detection", "title": "Smoke detection",
+     "text": "According to the challenge description, NASA technology has led to improvements in smoke detection on Earth.",
+     "related": ["PSI-102", "PSI-101", "PSI-47"], "related_label": "Catalogued here: SAME, SAME-R and DAFT (not on the map)"},
+    {"id": "firefighter-gear", "title": "Firefighter gear",
+     "text": "According to the challenge description, NASA technology has also improved firefighter gear, including protective clothing and air tanks.",
+     "related": [], "related_label": ""}
+  ]
+}

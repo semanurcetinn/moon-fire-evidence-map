@@ -1,6 +1,6 @@
 # Moon Fire Evidence Map
 
-An evidence map of NASA's microgravity combustion experiments that ranks investigations by how much they tell us about fire in a Moon-habitat atmosphere, and shows exactly where the evidence stops.
+Built for the NASA Space Apps Challenge 2026 challenge **Flame in Freefall**. An evidence map of NASA's microgravity combustion experiments that ranks investigations by how much they tell us about fire in a Moon-habitat atmosphere, and shows exactly where the evidence stops.
 
 **Live dashboard:** https://semanurcetinn.github.io/moon-fire-evidence-map/
 **Demo slides:** DEMO_LINK
@@ -8,11 +8,13 @@ An evidence map of NASA's microgravity combustion experiments that ranks investi
 Space Chillers · NASA Space Apps Challenge 2026 · "Flame in Freefall"
 
 ## What it shows
+- **Atmosphere Journey** – a probe walks from Earth's air to the expected Moon habitat to a spacesuit and counts the recorded tests near each atmosphere; everything that moves is recorded data, not a flame model. Add `#tour` to the URL for a short guided judge tour.
+- **Why oxygen matters** and **On Earth** – context from the challenge description (Apollo 1, Mir, the Moon-base atmosphere) and what this research gives back (water-mist extinguishers, smoke detection, firefighter gear).
 - **Evidence Map** – every harmonized test row placed by oxygen and pressure, with the Moon habitat box (O₂ ≥ 30 %, ≤ 10.2 psi), the outcome of each test and how trustworthy each row is.
-- **Investigation ranking** – the 12 harmonized investigations ranked by how much test-level evidence they give for a Moon-habitat atmosphere, with the score broken into its parts.
-- **Where the evidence stops + insights** – the gaps in plain words, plain-language insight texts prepared with an SI assistant, machine-checked and approved by the team, an "Ask the evidence" box that counts matching tests live, and a CSV download of any filtered selection.
+- **Investigation ranking and cards** – the 12 harmonized investigations ranked by how much test-level evidence they give for a Moon-habitat atmosphere, with the score broken into its parts; each card lists what was varied, what was held constant and what the table lacks.
+- **Where the evidence stops + insights** – the gaps in plain words, a card showing how many numbers in the published texts were checked against the data, plain-language insight texts prepared with an SI assistant, machine-checked and approved by the team, an "Ask the evidence" box that counts matching tests live, and a CSV download of any filtered selection.
 
-![Evidence Map: oxygen vs pressure with the Moon habitat box and the 22.7 % solid-fuel line](docs/img/evidence-map.png)
+![Atmosphere Journey and Evidence Map: test rows by oxygen and pressure, the Moon habitat box and the 22.7 % solid-fuel line](docs/img/evidence-map.png)
 
 ## Key findings
 - **87** test rows fall inside the Moon habitat box: 20 clean (A), 46 oxidizer-stream (B), 21 approximate (C).

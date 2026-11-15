@@ -1,0 +1,134 @@
+{
+  "note": "Research cards. A field is shown in the dashboard only after a team member has checked it against the listed source and set reviewed to true. Empty fields are shown as 'not recorded in the sources we used'.",
+  "sources_used": {
+    "challenge": "NASA Space Apps Challenge 2026, Flame in Freefall challenge description",
+    "table": "PSI test table of the investigation (values in data/experiments.csv)"
+  },
+  "cards": {
+    "PSI-159": {
+      "objective": "Cool flames of gaseous fuels at the highest oxygen levels tested in PSI: the chamber held nitrogen and a flammable gas such as propane, while an oxygen-nitrogen mixture flowed from a spherical burner and formed an inside-out flame.",
+      "sample_or_burner": "Spherical burner; ethane, propane and butane, pure or diluted.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-159 investigation page", "url": "https://doi.org/10.60555/cyt1-kh64"}],
+      "reviewed": true
+    },
+    "PSI-69": {
+      "objective": "Fire suppression: droplet flames of liquid fuel were extinguished by diluting the chamber atmosphere with carbon dioxide and helium.",
+      "sample_or_burner": "Single droplets of heptane and methanol in the Multi-user Droplet Combustion Apparatus.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-69 investigation page", "url": "https://doi.org/10.60555/mbq8-0451"}],
+      "reviewed": true
+    },
+    "PSI-26": {
+      "objective": "Flammability of solid materials such as fabrics and plastics in microgravity, in the fan-driven flow duct built for SPICE inside the Microgravity Science Glovebox.",
+      "sample_or_burner": "PMMA spheres, SIBAL cotton-fiberglass fabric, Nomex, paraffin wax slabs and candles.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-26 investigation page", "url": "https://doi.org/10.60555/58h4-dy80"}],
+      "reviewed": true
+    },
+    "PSI-10": {
+      "objective": "",
+      "sample_or_burner": "Spherical burner in the ACME hardware; ethylene and propane in normal and inverse flames.",
+      "measurements": [],
+      "sources": [{"label": "PSI-10 investigation page", "url": "https://doi.org/10.60555/w4zy-bt45"}],
+      "reviewed": true
+    },
+    "PSI-39": {
+      "objective": "",
+      "sample_or_burner": "Single droplets of n-dodecane and dodecane/iso-dodecane mixtures in the Multi-user Droplet Combustion Apparatus.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-39 investigation page", "url": "https://doi.org/10.60555/m6pj-a914"}],
+      "reviewed": true
+    },
+    "PSI-25": {
+      "objective": "Flammability of solid materials such as fabrics and plastics in microgravity (second series), in the same glovebox flow duct.",
+      "sample_or_burner": "PMMA films and slabs of several thicknesses, SIBAL fabric and other solid samples.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-25 investigation page", "url": "https://doi.org/10.60555/4qc4-de67"}],
+      "reviewed": true
+    },
+    "PSI-68": {
+      "objective": "",
+      "sample_or_burner": "Droplets of single fuels and mixtures (heptane, decane, ethanol, n-octane, iso-octane, propanol-glycerol) in the Multi-user Droplet Combustion Apparatus.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-68 investigation page", "url": "https://doi.org/10.60555/byp8-h018"}],
+      "reviewed": true
+    },
+    "PSI-100": {
+      "objective": "Spacecraft fire safety demonstration: flammability of solid materials at spacecraft scale.",
+      "sample_or_burner": "SIBAL fabric in an enclosure inside a Cygnus cargo vehicle.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-100 investigation page", "url": "https://doi.org/10.60555/040q-4h36"}],
+      "reviewed": true
+    },
+    "PSI-98": {
+      "objective": "Spacecraft fire safety demonstration: flammability of solid materials at spacecraft scale.",
+      "sample_or_burner": "SIBAL fabric sheet, 94 cm wide, 40.6 cm long and 0.37 cm thick, in an enclosure inside a Cygnus cargo vehicle.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-98 investigation page", "url": "https://doi.org/10.60555/0t15-1z43"}],
+      "reviewed": true
+    },
+    "PSI-99": {
+      "objective": "Spacecraft fire safety demonstration: flammability of solid materials at spacecraft scale.",
+      "sample_or_burner": "Samples of SIBAL fabric, PMMA, PMMA with Nomex and silicone in an enclosure inside a Cygnus cargo vehicle.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-99 investigation page", "url": "https://doi.org/10.60555/2chp-m469"}],
+      "reviewed": true
+    },
+    "PSI-20": {
+      "objective": "Materials flammability in still atmospheres as a function of material properties, studied by burning gaseous fuels.",
+      "sample_or_burner": "Gas burners of 25 mm and 50 mm; ethylene and methane.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-20 investigation page", "url": "https://doi.org/10.60555/vb93-3y72"}],
+      "reviewed": true
+    },
+    "PSI-107": {
+      "objective": "Smoke point of gas-jet flames in a co-flowing air stream, in the fan-driven flow duct inside the Microgravity Science Glovebox.",
+      "sample_or_burner": "Gas-jet nozzles of 0.4064, 0.762 and 1.6002 mm; ethylene, propane, methane and propylene.",
+      "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"},
+                  {"label": "PSI-107 investigation page", "url": "https://doi.org/10.60555/9kbh-e962"}],
+      "reviewed": true
+    },
+    "PSI-22": {
+      "objective": "Partial gravity was mimicked through the effect of an electric field on the ions that naturally occur in flames.",
+      "sample_or_burner": "", "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"}],
+      "reviewed": true
+    },
+    "PSI-101": {
+      "objective": "Fire detection in microgravity: smoke and aerosol measurements.",
+      "sample_or_burner": "", "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"}],
+      "reviewed": true
+    },
+    "PSI-102": {
+      "objective": "Fire detection in microgravity: smoke and aerosol measurements.",
+      "sample_or_burner": "", "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"}],
+      "reviewed": true
+    },
+    "PSI-47": {
+      "objective": "One of the instruments used for smoke detection in SAME and SAME-R was used here to detect dust.",
+      "sample_or_burner": "", "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"}],
+      "reviewed": true
+    },
+    "PSI-106": {
+      "objective": "",
+      "sample_or_burner": "Fan-driven flow duct built for SPICE, inside the Microgravity Science Glovebox.", "measurements": [],
+      "sources": [{"label": "Challenge description", "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"}],
+      "reviewed": true
+    }
+  }
+}

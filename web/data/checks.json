@@ -1,0 +1,15 @@
+{
+ "run_utc": "2026-11-15T17:48:30Z",
+ "texts_checked": [
+  "insights.json",
+  "investigation_cards.json",
+  "earth_context.json",
+  "README.md",
+  "SUBMISSION_TEXT.md",
+  "METHOD_RANKING.md",
+  "COLUMNS.md"
+ ],
+ "numbers_checked": 340,
+ "mismatches": 0,
+ "facts_ok": true
+}

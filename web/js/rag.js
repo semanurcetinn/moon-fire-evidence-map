@@ -426,6 +426,7 @@
         return Object.assign({}, r, { o2_min: num(r.o2_min), o2_max: num(r.o2_max), p: num(r.p) });
       });
       state.aliases = buildAliases(state.invs);
+      SOLID_MAX = appData.facts && appData.facts.solid ? appData.facts.solid.max_o2_pct : null;
       state.chunks = (corpus && corpus.chunks || []).map(function (c) { return Object.assign({}, c); });
       indexChunks(state.chunks);
       state.ready = true;
@@ -436,7 +437,50 @@
     return Promise.resolve(state.ready);
   }
 
-  var RAG = { init: init, ask: ask, _parse: function (q) { return parse(q); } };
+  // ---------------------------------------------------------------- nearest tests ("what-if", not a simulation)
+  // Distance = |ΔO₂|/5 + |log10(p/p_row)|/0.15 (5 O₂ points ≈ 0.15 decades), plottable rows only.
+  // "exact" = rows within ±2 % O₂ and ±1 psi (same window as js/journey.js). Never predicts anything.
+  var WIN_O2 = 2, WIN_PSI = 1, PSI_ATM = 14.696, SOLID_MAX = null;
+  function nearest(opts) {
+    var res = { exact: 0, nearest: [], outcome_counts: {}, grade_counts: {}, phase_counts: {}, by_psi: {},
+      nearest_distance: null, notes: [] };
+    try {
+      opts = opts || {};
+      var o2 = num(opts.o2), p = num(opts.p_atm), k = Math.max(1, Math.min(200, opts.k || 25));
+      if (o2 === null || p === null || p <= 0) { res.notes.push("Give an oxygen percentage and a pressure above 0 atm."); return res; }
+      var phase = opts.phase || null;
+      var pool = state.rows.filter(function (r) {
+        return r.plottable && r.o2_max !== null && r.o2_min !== null && r.p !== null && (!phase || r.phase === phase);
+      });
+      var lo = o2 - WIN_O2, hi = o2 + WIN_O2, pLo = p - WIN_PSI / PSI_ATM, pHi = p + WIN_PSI / PSI_ATM;
+      var win = pool.filter(function (r) { return r.o2_max >= lo && r.o2_min <= hi && r.p >= pLo - EPS && r.p <= pHi + EPS; });
+      res.exact = win.length;
+      var scored = pool.map(function (r) {
+        var d = Math.abs(r.o2_max - o2) / 5 + Math.abs(Math.log10(Math.max(r.p, 0.01) / p)) / 0.15;
+        return { r: r, d: d };
+      }).sort(function (a, b) { return a.d - b.d; }).slice(0, k);
+      res.nearest = scored.map(function (x) { return Object.assign({ distance: round(x.d, 3) }, x.r); });
+      res.nearest_distance = scored.length ? round(scored[0].d, 3) : null;
+      var basis = win.length ? win : res.nearest;
+      res.outcome_counts = countBy(basis, "outcome"); res.grade_counts = countBy(basis, "grade");
+      res.phase_counts = countBy(basis, "phase"); res.by_psi = countBy(basis, "psi");
+      if (win.length) {
+        res.notes.push(win.length + " tests within ±" + WIN_O2 + " % O₂ and ±" + WIN_PSI + " psi of this point.");
+      } else if (scored.length) {
+        var n = scored[0].r;
+        res.notes.push("No PSI test within ±" + WIN_O2 + " % O₂ and ±" + WIN_PSI + " psi of this point. Nearest: " + n.psi +
+          " test " + n.test + " at " + round(n.o2_max, 1) + " % O₂ / " + round(n.p * PSI_ATM, 1) + " psi (grade " + n.grade +
+          ", outcome " + n.outcome + ").");
+      }
+      if (basis.some(function (r) { return r.p_assumed; })) res.notes.push("Some of these rows use an assumed or report-mapped pressure.");
+      if (phase === "solid" && SOLID_MAX !== null && o2 > SOLID_MAX) res.notes.push("No solid-fuel test above " + SOLID_MAX + " % O₂ in the PSI tables.");
+    } catch (e) {
+      res.notes.push("The point could not be processed.");
+    }
+    return res;
+  }
+
+  var RAG = { init: init, ask: ask, nearest: nearest, _parse: function (q) { return parse(q); } };
   if (typeof module !== "undefined" && module.exports) module.exports = RAG;
   root.RAG = RAG;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -16,3 +16,6 @@ PLAN*.md
 *.pptx
 .env*
 proxy/.env
+
+# Demo slides are published through GitHub Pages (SPEC_06); every other PDF stays out of the repo.
+!web/demo/*.pdf

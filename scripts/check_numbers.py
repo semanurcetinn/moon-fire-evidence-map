@@ -20,6 +20,10 @@ ROOT = Path(__file__).resolve().parent.parent
 
 # Contract: Moon box limits, years, PSI numbers (PSI ids are stripped below).
 ALLOWED_CONSTANTS = {"30", "10.2", "0.694", "0.75"}
+# Numbers quoted from the challenge description (Earth 21 % / 14.7 psi, spacesuit 100 % / 4.3 psi,
+# "more than a 40 % increase", Artemis II "80,000 miles", Researcher's Guide 2015) and the two raw
+# PSI-20 cell values ("3400%"/"2100%") that docs/COLUMNS.md quotes verbatim.
+ALLOWED_CONSTANTS |= {"21", "14.7", "100", "4.3", "40", "80000", "2015", "3.6", "50", "3400", "2100"}
 SKIP_JSON_KEYS = {"id", "generated_with", "reviewed_by", "sources", "evidence", "doi", "doi_url", "psi"}
 
 # Tokens that contain digits but are identifiers, not quantities.
@@ -31,6 +35,7 @@ IDENTIFIER_PATTERNS = [
     r"\bv\d+(?:\.\d+)*\b",               # versions (v3.1)
     # report ids must be stripped BEFORE years, otherwise "TP-2015-216046" loses its year and leaves 216046
     r"\b(?:NASA/)?TP-\d{4}-\d+\b", r"\b(?:NASA\s+)?TM-\d+\b", r"\bNTRS\s*\d+\b", r"\bSAE\s*\d{4}-\d{2}-\d{4}\b",
+    r"\b(?:19|20)\d0s\b",                # decades (1970s)
     r"\b(?:19|20)\d\d\b",                # years
     r"\b(?:SAFFIRE|FLEX|BASS|DAFT|SAME|CFI)-(?:\d+|I{1,3}|R|G)\b",
     r"\b(?:[A-Z][a-z]?\d*)*[A-Z][a-z]?\d+(?:[A-Z][a-z]?\d*)*\b",   # chemical formulas: O2, CO2, C2H4, C12H26
@@ -77,7 +82,8 @@ def allowed_numbers():
     collect(app["meta"]["ranking"], acc)
     # numbers that appear inside investigation strings (e.g. "50% butane", "12 rows")
     for inv in app["investigations"]:
-        for s in [inv.get("note") or ""] + list(inv.get("fuels") or []):
+        geo = (inv.get("variables") or {}).get("geometry_values") or []
+        for s in [inv.get("note") or ""] + list(inv.get("fuels") or []) + list(geo):
             acc |= set(re.findall(r"\d+(?:\.\d+)?", s))
     return acc
 
@@ -114,10 +120,25 @@ def numbers_in(text):
     return found
 
 
+def write_summary(files, checked, issues):
+    """--write-summary: web/data/checks.json, read by the dashboard's visible checker card."""
+    import datetime
+    import subprocess
+    facts_ok = subprocess.run([sys.executable, str(ROOT / "scripts/verify_facts.py")], capture_output=True, text=True).returncode == 0
+    out = {"run_utc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+           "texts_checked": [f.name for f in files], "numbers_checked": checked,
+           "mismatches": len(issues), "facts_ok": facts_ok}
+    (ROOT / "web/data/checks.json").write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
+    print(f"wrote web/data/checks.json: {checked} numbers, {len(issues)} mismatches, facts_ok={facts_ok}")
+
+
 def main(argv):
+    summary = "--write-summary" in argv
+    argv = [a for a in argv if a != "--write-summary"]
     files = [Path(a) for a in argv] or [ROOT / "web/data/insights.json"]
     allowed = allowed_numbers()
     issues = []
+    checked = 0
     for f in files:
         p = f if f.is_absolute() else (Path.cwd() / f)
         if not p.exists():
@@ -125,8 +146,11 @@ def main(argv):
             return 2
         for loc, text in texts_from(p):
             for n in numbers_in(text):
+                checked += 1
                 if n not in allowed:
                     issues.append((str(f), loc, n, text.strip()[:110]))
+    if summary:
+        write_summary(files, checked, issues)
     if issues:
         print(f"{len(issues)} number(s) not found in app_data.json or allowed constants:")
         for f, loc, n, ctx in issues:
