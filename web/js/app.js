@@ -147,7 +147,7 @@
       hovermode: "closest", hoverlabel: { align: "left" }, dragmode: "zoom",
       xaxis: { title: { text: "Oxygen, % (effective)" }, range: X_RANGE, gridcolor: grid, zeroline: false, ticksuffix: "", dtick: 10 },
       yaxis: { title: { text: "Pressure, atm (log)" }, type: "log", range: [L(Y_MIN), L(Y_MAX)], gridcolor: grid,
-               tickvals: [0.3, 0.5, 0.694, 1, 2, 3, 5], ticktext: ["0.3", "0.5", "0.694", "1", "2", "3", "5"] },
+               tickvals: [0.5, 0.694, 1, 2, 3, 5], ticktext: ["0.5", "0.694", "1", "2", "3", "5"] },
       yaxis2: { title: { text: "psi" }, type: "log", overlaying: "y", side: "right", range: [L(Y_MIN * 14.696), L(Y_MAX * 14.696)],
                 tickvals: [5, 7.35, 10.2, 14.7, 30, 44, 73.5], ticktext: ["5", "7.35", "10.2", "14.7", "30", "44", "73.5"], showgrid: false },
       annotations: [
