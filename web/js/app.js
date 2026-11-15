@@ -545,7 +545,7 @@
     s.onerror = function () { console.warn("[app] Ask the evidence disabled: js/rag.js not found"); };
     document.body.appendChild(s);
   }
-  // SPEC_05: optional live answer through proxy/ (Cloud Run + Gemini via AI Studio free tier). Off while PROXY_URL is empty.
+  // Optional live answer: set PROXY_URL in config.js to a service that returns a checked answer. Empty = offline mode (the submitted site).
   function proxyUrl() { var c = window.MFEM_CONFIG || {}; return (c.PROXY_URL || "").replace(/\/+$/, ""); }
   var liveSeq = 0;
   function askLive(q, res) {
