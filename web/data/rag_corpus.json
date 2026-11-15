@@ -1,0 +1,756 @@
+{
+ "built_from": {
+  "app_data_sha": "719f99a48229665cf6ae8b162677c0c2a2bc52d2d88717ab14880cd3027fcac7",
+  "insights": true
+ },
+ "chunks": [
+  {
+   "id": "global-moon-gap",
+   "type": "global",
+   "psi": [
+    "PSI-159",
+    "PSI-10",
+    "PSI-20",
+    "PSI-68"
+   ],
+   "title": "What the data covers in a Moon-habitat atmosphere",
+   "text": "87 test rows fall inside the Moon habitat box (oxygen at or above 30 %, pressure at or below 10.2 psi): 20 clean (grade A), 46 with oxidizer-stream oxygen (grade B) and 21 approximate (grade C). 79 of them are gaseous flames and 8 are liquid droplets; none is a solid fuel. Fabrics and plastics, the materials that burn in a crew cabin, are therefore not represented at Moon-habitat conditions in PSI. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "global-solid-ceiling",
+   "type": "global",
+   "psi": [
+    "PSI-26",
+    "PSI-25",
+    "PSI-98",
+    "PSI-99",
+    "PSI-100"
+   ],
+   "title": "Solid fuels stop at 22.7 % oxygen",
+   "text": "PSI holds 264 solid-fuel test rows, and the highest oxygen among them is 22.7 %. No solid sample was burned at the 30 % oxygen expected in a Moon base or pressurized rover, so the data does not show how cabin materials behave there. Solid-fuel results near Earth-like oxygen can serve only as a lower-oxygen reference. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "global-clean-core",
+   "type": "global",
+   "psi": [
+    "PSI-159"
+   ],
+   "title": "The 20 clean tests inside the box",
+   "text": "All 20 grade A rows in the Moon habitat box come from PSI-159 (ACME CFI-G): gaseous fuels (50% butane, 30% ethane, 30% butane) burned at 0.5 atm in ambient oxygen above 30 %. Their outcomes are 13 extinguished, 4 sustained, 2 cool flames and 1 not recorded. These are gas flames on a burner, not burning solids, so they describe flame behaviour rather than material flammability. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "global-edge-droplets",
+   "type": "global",
+   "psi": [
+    "PSI-69"
+   ],
+   "title": "17 droplet tests just outside the box",
+   "text": "17 FLEX (PSI-69) rows have oxygen from 30 to 34 % at pressures just above 10.2 psi and at most 0.75 atm, the edge of the Moon habitat box. In 15 of them the droplet broke apart before extinction (droplet disruption) and 2 burned to completion (sustained). They are the closest liquid-fuel test rows with a recorded outcome to Moon-habitat conditions. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "global-unrecorded",
+   "type": "global",
+   "psi": [
+    "PSI-159",
+    "PSI-69",
+    "PSI-26",
+    "PSI-25"
+   ],
+   "title": "What 'not recorded' means",
+   "text": "Only 668 of 1,805 rows record an outcome (606 high confidence, 62 low confidence), and they come from four investigations: PSI-159, PSI-69, PSI-26 and PSI-25. For the other 1,137 rows the source table lists no outcome. 'Not recorded' means the outcome is missing from the table; it does not mean the flame kept burning or went out. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "qa-1",
+   "type": "qa",
+   "psi": [
+    "PSI-159"
+   ],
+   "title": "Which investigation tells us the most about a Moon habitat atmosphere?",
+   "text": "PSI-159 (ACME CFI-G). It has 48 rows inside the Moon habitat box, including all 20 clean (grade A) rows, and records an outcome for 332 of its 333 rows; it ranks first with a score of 84.0. Its fuels are gases, so it says little about solid cabin materials. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "qa-2",
+   "type": "qa",
+   "psi": [
+    "PSI-26",
+    "PSI-25",
+    "PSI-98",
+    "PSI-99",
+    "PSI-100"
+   ],
+   "title": "Is there any solid-fuel test at 30 % oxygen or more?",
+   "text": "No. The 264 solid-fuel rows in PSI reach at most 22.7 % oxygen (PSI-26), and none lies in the Moon habitat box. How fabrics and plastics burn at Moon-habitat oxygen is not covered by this data. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "qa-3",
+   "type": "qa",
+   "psi": [
+    "PSI-159"
+   ],
+   "title": "What happened in the cleanest tests inside the Moon habitat box?",
+   "text": "The 20 grade A rows are PSI-159 gas flames at 0.5 atm in ambient oxygen above 30 %. Their outcomes are 13 extinguished, 4 sustained, 2 cool flames and 1 not recorded. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "qa-4",
+   "type": "qa",
+   "psi": [
+    "PSI-10",
+    "PSI-159"
+   ],
+   "title": "Why are some oxygen values marked \"oxidizer stream\"?",
+   "text": "In inverse flames (PSI-10, PSI-159) oxygen flows out of the burner into a fuel-laden atmosphere, so the recorded oxygen is the burner oxidizer fraction, not cabin air. These 263 rows are grade B and can be hidden on the map with one switch. Evidence: B.",
+   "evidence": "B"
+  },
+  {
+   "id": "qa-5",
+   "type": "qa",
+   "psi": [
+    "PSI-98",
+    "PSI-99",
+    "PSI-100"
+   ],
+   "title": "Why is SAFFIRE ranked low if it is the largest fire experiment?",
+   "text": "The score measures how much test-level data can be placed in the oxygen-pressure plane. The SAFFIRE tables (PSI-98, PSI-99, PSI-100) have no pressure, so all 13 rows are grade D and only the material component scores, giving 20.0. The rank reflects missing table data, not the value of the experiments. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "qa-6",
+   "type": "qa",
+   "psi": [
+    "PSI-10",
+    "PSI-107",
+    "PSI-26",
+    "PSI-25"
+   ],
+   "title": "What does \"not recorded\" mean for an outcome?",
+   "text": "The source table lists no outcome for that row. 1,137 of 1,805 rows are not recorded; this does not mean the flame kept burning or went out. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "qa-7",
+   "type": "qa",
+   "psi": [
+    "PSI-159",
+    "PSI-69",
+    "PSI-26"
+   ],
+   "title": "How was the ranking score computed?",
+   "text": "Score = 35 x moon + 25 x quality + 20 x outcome + 20 x material, from 0 to 100. Moon counts grade-weighted rows in the Moon habitat box, quality is the mean evidence grade, outcome is the share of rows with a recorded outcome, and material favours solids (an editorial choice). It measures data coverage for the Moon-habitat question, not scientific merit. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "qa-8",
+   "type": "qa",
+   "psi": [
+    "PSI-26",
+    "PSI-25",
+    "PSI-22"
+   ],
+   "title": "Where is the biggest gap in the data?",
+   "text": "Solid fuels at oxygen of 30 % or more and pressure of 10.2 psi or less are not covered: no solid-fuel test in PSI exceeds 22.7 % oxygen. PSI also holds no partial-gravity combustion data yet, so microgravity and normal-gravity results can only bound lunar or Martian conditions. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-159-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-159"
+   ],
+   "title": "PSI-159 (ACME CFI-G) summary",
+   "text": "ACME CFI-G burned ethane, propane and butane, pure or diluted, on a spherical burner in the Combustion Integrated Rack, at oxygen from 12 to 85 % and pressure from 0.489 to 3.267 atm. In its inverse flames oxygen flowed out of the burner into a fuel-laden atmosphere, which gave the highest oxygen levels in PSI. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-159-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-159"
+   ],
+   "title": "PSI-159 (ACME CFI-G) fire-safety relevance",
+   "text": "Ranked 1 of 12 with a score of 84.0: 48 of its rows lie inside the Moon habitat box, including all 20 clean (grade A) rows in PSI, and 332 of 333 rows record an outcome. It is the main source on whether flames go out, keep burning or turn into cool flames at Moon-habitat oxygen and pressure. Evidence: A.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-159-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-159"
+   ],
+   "title": "PSI-159 (ACME CFI-G) limits",
+   "text": "Its fuels are gases, not cabin materials. 154 rows are grade B: in inverse flames the oxygen value is the burner oxidizer fraction, not cabin air. 'Extinguished' marks the end of the hot flame; cool flames may have continued afterwards. Evidence: B.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-69-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-69"
+   ],
+   "title": "PSI-69 (FLEX) summary",
+   "text": "FLEX burned single heptane and methanol droplets in the Multi-user Droplet Combustion Apparatus, at oxygen from 12 to 34 % and pressure up to 3.053 atm. It studied how much the cabin atmosphere has to be diluted, for example with carbon dioxide or helium, before droplet flames go out. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "inv-PSI-69-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-69"
+   ],
+   "title": "PSI-69 (FLEX) fire-safety relevance",
+   "text": "Ranked 2 of 12 with a score of 64.4. All 274 rows record an outcome (186 extinguished, 61 droplet disruption, 27 sustained), and 17 rows sit at the edge of the Moon habitat box. It is the main PSI source on fire suppression by diluting the atmosphere, which informs extinguisher and cabin-atmosphere design. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "inv-PSI-69-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-69"
+   ],
+   "title": "PSI-69 (FLEX) limits",
+   "text": "No FLEX row is inside the box; the edge rows lie just above 10.2 psi. One row records a pressure of 0, kept as in the source and flagged. Droplet flames describe liquid-fuel fires, not burning fabrics or plastics. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "inv-PSI-26-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-26"
+   ],
+   "title": "PSI-26 (BASS) summary",
+   "text": "BASS burned solid samples (PMMA spheres, SIBAL cotton-fiberglass fabric, Nomex and a wax candle) in a fan-driven flow duct inside the Microgravity Science Glovebox, at oxygen from 15.9 to 22.7 % near 1 atm. The air speed in the duct was varied to see when flames spread, shrink or blow off. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "inv-PSI-26-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-26"
+   ],
+   "title": "PSI-26 (BASS) fire-safety relevance",
+   "text": "Ranked 3 of 12 with a score of 47.8 and the highest-ranked solid-fuel study: 121 of 122 rows are clean (grade A). Its 22.7 % oxygen is the highest of any solid-fuel test in PSI and marks the upper limit of solid-material evidence for spacecraft and Moon-habitat cabins. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "inv-PSI-26-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-26"
+   ],
+   "title": "PSI-26 (BASS) limits",
+   "text": "Outcomes are recorded for only 37 rows and were parsed from free-text notes (low confidence); a few were checked by hand. 'Extinguished' also includes flames ended by the operator. No test reaches 30 % oxygen. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "inv-PSI-10-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-10"
+   ],
+   "title": "PSI-10 (ACME/Flame Design) summary",
+   "text": "ACME Flame Design burned ethylene and propane on a spherical burner in the Combustion Integrated Rack, in normal flames (fuel out of the burner) and inverse flames (oxygen out of the burner). Oxygen ranges from 19.75 to 85 % and pressure from 0.425 to 3.008 atm. It studied flame structure and soot formation. Evidence: mixed.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-10-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-10"
+   ],
+   "title": "PSI-10 (ACME/Flame Design) fire-safety relevance",
+   "text": "Ranked 4 of 12 with a score of 45.1. 18 inverse-flame rows reach the Moon habitat box, all grade B: their oxygen is the burner oxidizer fraction, not cabin air. Its wide oxygen and pressure coverage supports models of gas-flame structure across cabin atmospheres. Evidence: B.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-10-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-10"
+   ],
+   "title": "PSI-10 (ACME/Flame Design) limits",
+   "text": "No outcome is recorded in its tables (327 rows not recorded). Inverse-flame oxygen is the burner oxidizer fraction, not cabin air. Its license is not stated in PSI; cite DOI 10.60555/w4zy-bt45. Evidence: B.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-39-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-39"
+   ],
+   "title": "PSI-39 (CFI) summary",
+   "text": "CFI burned single droplets of n-dodecane (C12H26) and dodecane/iso-dodecane mixtures in the Multi-user Droplet Combustion Apparatus, at oxygen from 17 to 21 % and pressure from 0.5 to 5 atm. It studied cool flames, the low-temperature burning that can follow hot-flame extinction. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "inv-PSI-39-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-39"
+   ],
+   "title": "PSI-39 (CFI) fire-safety relevance",
+   "text": "Ranked 5 of 12 with a score of 35.5: 79 of 87 rows are clean (grade A), but none is in or at the edge of the Moon habitat box. It informs the ignition and cool-flame chemistry that fire models need. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "inv-PSI-39-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-39"
+   ],
+   "title": "PSI-39 (CFI) limits",
+   "text": "No outcome is recorded in its table (87 rows not recorded). Oxygen does not exceed 21 %. 8 rows are exact duplicates in the source file, kept and flagged. Evidence: A.",
+   "evidence": "A"
+  },
+  {
+   "id": "inv-PSI-25-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-25"
+   ],
+   "title": "PSI-25 (BASS-II) summary",
+   "text": "BASS-II continued BASS with PMMA of several thicknesses, SIBAL fabric and other solid samples in the same glovebox flow duct, at oxygen from 13.6 to 22.2 %. It examined flame spread and extinction of solids at different oxygen levels and air speeds. Evidence: C.",
+   "evidence": "C"
+  },
+  {
+   "id": "inv-PSI-25-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-25"
+   ],
+   "title": "PSI-25 (BASS-II) fire-safety relevance",
+   "text": "Ranked 6 of 12 with a score of 30.2. Together with BASS it is the main PSI source on how solid materials burn in a slow air flow, the situation in a ventilated spacecraft cabin. Evidence: C.",
+   "evidence": "C"
+  },
+  {
+   "id": "inv-PSI-25-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-25"
+   ],
+   "title": "PSI-25 (BASS-II) limits",
+   "text": "The table has no pressure column, so 1 atm is assumed and all 129 rows are grade C. Outcomes are recorded for 25 rows, parsed from free text (low confidence), and 'extinguished' includes operator-ended tests. Evidence: C.",
+   "evidence": "C"
+  },
+  {
+   "id": "inv-PSI-68-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-68"
+   ],
+   "title": "PSI-68 (FLEX-2) summary",
+   "text": "FLEX-2 burned droplets of single fuels and mixtures (heptane, decane, ethanol, n-octane, iso-octane, propanol-glycerol) in the Multi-user Droplet Combustion Apparatus. Its PSI table lists 8 summary rows at 0.5 atm with oxygen from 17 to 30 %. Evidence: C.",
+   "evidence": "C"
+  },
+  {
+   "id": "inv-PSI-68-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-68"
+   ],
+   "title": "PSI-68 (FLEX-2) fire-safety relevance",
+   "text": "Ranked 7 of 12 with a score of 23.8: all 8 rows fall in the Moon habitat box and are the only liquid-fuel rows inside it. They show that droplet tests were run at Moon-habitat-like conditions. Evidence: C.",
+   "evidence": "C"
+  },
+  {
+   "id": "inv-PSI-68-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-68"
+   ],
+   "title": "PSI-68 (FLEX-2) limits",
+   "text": "The rows summarize test series rather than individual tests, so they are grade C and no outcome is recorded. Test-level data is needed before they can support predictive modelling. Evidence: C.",
+   "evidence": "C"
+  },
+  {
+   "id": "inv-PSI-100-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-100"
+   ],
+   "title": "PSI-100 (SAFFIRE-III) summary",
+   "text": "SAFFIRE-III burned a large SIBAL fabric sample in an enclosure inside an uncrewed Cygnus cargo vehicle. Its PSI table lists 2 rows. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-100-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-100"
+   ],
+   "title": "PSI-100 (SAFFIRE-III) fire-safety relevance",
+   "text": "Ranked 8 of 12 with a score of 20.0. SAFFIRE tested fire at a scale far larger than glovebox samples, with a cabin-type fabric, so it is directly relevant to spacecraft fire safety. Its low rank reflects missing table data, not low importance. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-100-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-100"
+   ],
+   "title": "PSI-100 (SAFFIRE-III) limits",
+   "text": "The table has no oxygen or pressure, so both rows are grade D and cannot be placed on the map. Flow is 30 cm/s in PSI but 25 cm/s in a NASA publication; the conflict is flagged. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-98-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-98"
+   ],
+   "title": "PSI-98 (SAFFIRE-I) summary",
+   "text": "SAFFIRE-I burned a large SIBAL cotton-fiberglass fabric sample in an enclosure inside an uncrewed Cygnus cargo vehicle to observe flame spread at spacecraft scale. Its PSI table lists 2 rows with oxygen near 21.5 %. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-98-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-98"
+   ],
+   "title": "PSI-98 (SAFFIRE-I) fire-safety relevance",
+   "text": "Ranked 9 of 12 with a score of 20.0. It tested fire spread over a cabin-type fabric at a scale far larger than glovebox samples. Its low rank reflects missing table data, not low importance. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-98-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-98"
+   ],
+   "title": "PSI-98 (SAFFIRE-I) limits",
+   "text": "The table has no pressure, so both rows are grade D and are not plotted. No outcome is recorded for either row. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-99-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-99"
+   ],
+   "title": "PSI-99 (SAFFIRE-II) summary",
+   "text": "SAFFIRE-II burned samples of different materials (SIBAL fabric, PMMA, PMMA with Nomex, silicone) in an enclosure inside an uncrewed Cygnus cargo vehicle; its PSI table lists 9 rows with oxygen from 21.5 to 22.1 %. It compared the flammability of several cabin-type materials. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-99-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-99"
+   ],
+   "title": "PSI-99 (SAFFIRE-II) fire-safety relevance",
+   "text": "Ranked 10 of 12 with a score of 20.0. It covers several cabin-type materials in one spacecraft-scale enclosure, which is the kind of comparison material selection relies on. Its low rank reflects missing table data, not low importance. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-99-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-99"
+   ],
+   "title": "PSI-99 (SAFFIRE-II) limits",
+   "text": "The table has no pressure, so all 9 rows are grade D and are not plotted. No outcome is recorded, and 2 rows have an empty material cell in the source. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-20-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-20"
+   ],
+   "title": "PSI-20 (ACME BRE) summary",
+   "text": "The Burning Rate Emulator burned ethylene and methane from a burner to emulate how solid materials burn, in still atmospheres with oxygen from 21 to 40 %. Its table is a day-level summary that lists the approximate oxygen levels of tests that ignited. Evidence: C.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-20-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-20"
+   ],
+   "title": "PSI-20 (ACME BRE) fire-safety relevance",
+   "text": "Ranked 11 of 12 with a score of 18.9. 13 rows fall in the Moon habitat box, which makes it one of the few PSI sources on material-like burning at Moon-habitat oxygen. Evidence: C.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-20-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-20"
+   ],
+   "title": "PSI-20 (ACME BRE) limits",
+   "text": "Its pressures are mapped from the final report, not measured per test. 16 rows lack pressure (grade D) and no outcome is recorded. Evidence: C.",
+   "evidence": "mixed"
+  },
+  {
+   "id": "inv-PSI-107-summary",
+   "type": "investigation",
+   "psi": [
+    "PSI-107"
+   ],
+   "title": "PSI-107 (SPICE) summary",
+   "text": "SPICE burned gas jets (ethylene, propane, methane, propylene and mixtures) in a co-flow of air inside the glovebox flow duct to measure the smoke point, the flame size at which soot starts to escape. Its table holds 469 rows. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-107-relevance",
+   "type": "investigation",
+   "psi": [
+    "PSI-107"
+   ],
+   "title": "PSI-107 (SPICE) fire-safety relevance",
+   "text": "Ranked 12 of 12 with a score of 8.0. Soot and smoke data matter for fire detection and for radiation in fire models, and its flow duct was reused for BASS and BASS-II. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "inv-PSI-107-limits",
+   "type": "investigation",
+   "psi": [
+    "PSI-107"
+   ],
+   "title": "PSI-107 (SPICE) limits",
+   "text": "The table has neither oxygen nor pressure, so all 469 rows are grade D and are not plotted. Some rows have an unexplained negative air velocity and some are exact duplicates; all are flagged. Evidence: mixed.",
+   "evidence": "D"
+  },
+  {
+   "id": "cat-PSI-21",
+   "type": "investigation",
+   "psi": [
+    "PSI-21"
+   ],
+   "title": "PSI-21 (ACME CLD Flame) not in the harmonized table",
+   "text": "PSI-21 (ACME CLD Flame), Advanced Combustion via Microgravity Experiments / Coflow Laminar Diffusion Flame, is catalogued but not in the harmonized table. Table has no O2 or pressure columns.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-22",
+   "type": "investigation",
+   "psi": [
+    "PSI-22"
+   ],
+   "title": "PSI-22 (ACME E-FIELD Flames) not in the harmonized table",
+   "text": "PSI-22 (ACME E-FIELD Flames), Advanced Combustion via Microgravity Experiments Electric-Field Effects on Laminar Diffusion Flames, is catalogued but not in the harmonized table. Table has no O2 column. Per the challenge text, its electric field acts on ions in the flame and mimics a partial-gravity buoyancy effect.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-23",
+   "type": "investigation",
+   "psi": [
+    "PSI-23"
+   ],
+   "title": "PSI-23 (ACME s-Flame) not in the harmonized table",
+   "text": "PSI-23 (ACME s-Flame), Advanced Combustion via Microgravity Experiments-Structure and Response of Spherical Diffusion Flames, is catalogued but not in the harmonized table. Has an 'Atmosphere' column that needs manual reading.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-47",
+   "type": "investigation",
+   "psi": [
+    "PSI-47"
+   ],
+   "title": "PSI-47 (DAFT / DAFT-2) not in the harmonized table",
+   "text": "PSI-47 (DAFT / DAFT-2), Dust and Aerosol Measurement Feasibility Test / Dust and Aerosol Measurement Feasibility Test-2, is catalogued but not in the harmonized table. Only 2 rows (aerosol feasibility test). Per the challenge text, it used one of the instruments that measured smoke in SAME and SAME-R.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-60",
+   "type": "investigation",
+   "psi": [
+    "PSI-60"
+   ],
+   "title": "PSI-60 (Computational and Experimental Analysis of SPICE Data Sets) not in the harmonized table",
+   "text": "PSI-60 (Computational and Experimental Analysis of SPICE Data Sets), Computational and Experimental Analysis of SPICE Data Sets, is catalogued but not in the harmonized table. Ground modelling; no experimental table.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-62",
+   "type": "investigation",
+   "psi": [
+    "PSI-62"
+   ],
+   "title": "PSI-62 (Concurrent Flame Spread Modeling using Flamelet Generated Manifolds in Microgravity with Comparison to BASS Experiments using Two-Color Tomography) not in the harmonized table",
+   "text": "PSI-62 (Concurrent Flame Spread Modeling using Flamelet Generated Manifolds in Microgravity with Comparison to BASS Experiments using Two-Color Tomography), Concurrent Flame Spread Modeling using Flamelet Generated Manifolds in Microgravity with Comparison to BASS Experiments using Two-Color Tomography, is catalogued but not in the harmonized table. Ground modelling; no experimental table.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-101",
+   "type": "investigation",
+   "psi": [
+    "PSI-101"
+   ],
+   "title": "PSI-101 (SAME-R) not in the harmonized table",
+   "text": "PSI-101 (SAME-R), Smoke Aerosol Measurement Experiment-Reflight, is catalogued but not in the harmonized table. Smoke aerosol study; no O2 in table. Smoke measurements of this kind inform fire detection.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-102",
+   "type": "investigation",
+   "psi": [
+    "PSI-102"
+   ],
+   "title": "PSI-102 (SAME) not in the harmonized table",
+   "text": "PSI-102 (SAME), Smoke and Aerosol Measurement Experiment, is catalogued but not in the harmonized table. Smoke aerosol study; no O2 in table. Smoke measurements of this kind inform fire detection.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-106",
+   "type": "investigation",
+   "psi": [
+    "PSI-106"
+   ],
+   "title": "PSI-106 (SLICE) not in the harmonized table",
+   "text": "PSI-106 (SLICE), Structure and Liftoff In Combustion Experiment, is catalogued but not in the harmonized table. 12 rows, only test date and fuel type.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-115",
+   "type": "investigation",
+   "psi": [
+    "PSI-115"
+   ],
+   "title": "PSI-115 (Utilization of the Smoke Aerosol Measurement Experiment Data for Advanced Modeling and Simulation of Smoke Generation in Micro-Gravity) not in the harmonized table",
+   "text": "PSI-115 (Utilization of the Smoke Aerosol Measurement Experiment Data for Advanced Modeling and Simulation of Smoke Generation in Micro-Gravity), Utilization of the Smoke Aerosol Measurement Experiment Data for Advanced Modeling and Simulation of Smoke Generation in Micro-Gravity, is catalogued but not in the harmonized table. No experimental table.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-117",
+   "type": "investigation",
+   "psi": [
+    "PSI-117"
+   ],
+   "title": "PSI-117 (Effect of External Thermo-Convective Perturbation on Cool Flame Dynamics: A Multidimensional Multi-Physics CFD Analysis) not in the harmonized table",
+   "text": "PSI-117 (Effect of External Thermo-Convective Perturbation on Cool Flame Dynamics: A Multidimensional Multi-Physics CFD Analysis), Effect of External Thermo-Convective Perturbation on Cool Flame Dynamics: A Multidimensional Multi-Physics CFD Analysis, is catalogued but not in the harmonized table. Ground CFD study.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-142",
+   "type": "investigation",
+   "psi": [
+    "PSI-142"
+   ],
+   "title": "PSI-142 (Quantitative Studies of Cool Flame Transitions at Radiation / Stretch Extinction Using Counterflow Flames) not in the harmonized table",
+   "text": "PSI-142 (Quantitative Studies of Cool Flame Transitions at Radiation / Stretch Extinction Using Counterflow Flames), Quantitative Studies of Cool Flame Transitions at Radiation / Stretch Extinction Using Counterflow Flames, is catalogued but not in the harmonized table. Table is a data description, not test data.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "cat-PSI-179",
+   "type": "investigation",
+   "psi": [
+    "PSI-179"
+   ],
+   "title": "PSI-179 (ASE) not in the harmonized table",
+   "text": "PSI-179 (ASE), Aerosol Sampling Experiment, is catalogued but not in the harmonized table. Cabin aerosol sampling; not a combustion test.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "method-moon-box",
+   "type": "method",
+   "psi": [],
+   "title": "Moon habitat box definition",
+   "text": "The Moon habitat box is oxygen at or above 30 % and pressure at or below 10.2 psi (0.694 atm), the expected Moon Base and pressurized rover atmosphere. The edge zone is oxygen at or above 30 % with pressure above 0.694 and up to 0.75 atm.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "method-grades",
+   "type": "method",
+   "psi": [],
+   "title": "Evidence grades A to D",
+   "text": "Grade A (clean): test-level row, ambient oxygen, measured pressure, no anomaly. Grade B: measured, but oxygen is the burner oxidizer fraction, not cabin air. Grade C (approximate): summary row, assumed or report-mapped pressure, derived oxygen or an anomaly. Grade D (incomplete): oxygen or pressure missing.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "method-score",
+   "type": "method",
+   "psi": [],
+   "title": "How the Moon-relevance evidence score is calculated",
+   "text": "Score = 35 x moon + 25 x quality + 20 x outcome + 20 x material, from 0 to 100. Moon counts rows in the Moon habitat box weighted by grade (A 1, B 0.5, C 0.25, edge 0.25) up to 20 rows. Quality is the mean grade weight (A 1, B 0.66, C 0.33, D 0). Outcome is the share of rows with a recorded outcome (low confidence counts half). Material is solid 1.0, liquid 0.6, gas 0.4, an editorial choice for closeness to cabin materials.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "method-score-meaning",
+   "type": "method",
+   "psi": [],
+   "title": "What the ranking score means and does not mean",
+   "text": "The score measures how much harmonized data an investigation contributes to the Moon-habitat question. It is a data coverage measure, not a measure of the scientific value of the experiment. Investigations whose tables lack oxygen or pressure rank low because they cannot be placed on the map.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "method-no-correction",
+   "type": "method",
+   "psi": [],
+   "title": "No values were corrected",
+   "text": "No source value was corrected. Suspect values are kept as they are and flagged; every row traces back to its NASA PSI source file and row number.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "limit-oxidizer",
+   "type": "limit",
+   "psi": [],
+   "title": "Grade B oxygen is not cabin air",
+   "text": "Grade B oxygen values are the burner oxidizer fraction, not cabin air. In PSI-10 and PSI-159 inverse flames oxygen flows from the burner into a fuel-nitrogen atmosphere.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "limit-psi20",
+   "type": "limit",
+   "psi": [],
+   "title": "PSI-20 pressures are report-mapped",
+   "text": "PSI-20 pressures are mapped from the final report, not measured per test. Its table is a day-level summary and the listed oxygen levels are approximate levels for tests that ignited.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "limit-not-recorded",
+   "type": "limit",
+   "psi": [],
+   "title": "What 'not recorded' means",
+   "text": "'Not recorded' means the source table lists no outcome; it does not mean the flame kept burning. 1137 of 1805 rows have no recorded outcome.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "limit-solid-o2",
+   "type": "limit",
+   "psi": [],
+   "title": "No solid-fuel test at 30 % oxygen",
+   "text": "No solid-fuel test in PSI reaches 30 % oxygen; the highest is 22.7 %. Evidence inside the Moon habitat box is gaseous-flame and liquid-droplet evidence.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "limit-psi25",
+   "type": "limit",
+   "psi": [],
+   "title": "PSI-25 pressure is assumed",
+   "text": "PSI-25 pressure is an assumed 1 atm; the table has no pressure column.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "limit-scope",
+   "type": "limit",
+   "psi": [],
+   "title": "This tool does not assess safety",
+   "text": "This tool reports what was tested; it does not assess safety or predict untested conditions. The data alone is not sufficient for a design decision.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "limit-partial-gravity",
+   "type": "limit",
+   "psi": [],
+   "title": "No partial-gravity data",
+   "text": "PSI has no partial-gravity combustion data yet. Microgravity and normal-gravity results can only bound what may happen at lunar or Martian gravity.",
+   "evidence": "n/a"
+  },
+  {
+   "id": "limit-extinguished",
+   "type": "limit",
+   "psi": [],
+   "title": "Operator-ended tests in BASS",
+   "text": "In PSI-25 and PSI-26 the label 'extinguished' also includes flames ended by the operator (fan or flow turned off); it is parsed from free text and has low confidence.",
+   "evidence": "n/a"
+  }
+ ]
+}
