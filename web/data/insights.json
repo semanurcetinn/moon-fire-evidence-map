@@ -39,7 +39,7 @@
   ],
   "investigations": {
     "PSI-159": {
-      "summary": "ACME CFI-G burned ethane, propane and butane, pure or diluted, on a spherical porous burner in the Combustion Integrated Rack, at oxygen from 12 to 85 % and pressure from 0.489 to 3.267 atm. In its inverse flames oxygen flowed out of the burner into a fuel-laden atmosphere, which gave the highest oxygen levels in PSI. Evidence: mixed.",
+      "summary": "ACME CFI-G burned ethane, propane and butane, pure or diluted, on a spherical burner in the Combustion Integrated Rack, at oxygen from 12 to 85 % and pressure from 0.489 to 3.267 atm. In its inverse flames oxygen flowed out of the burner into a fuel-laden atmosphere, which gave the highest oxygen levels in PSI. Evidence: mixed.",
       "fire_safety_relevance": "Ranked 1 of 12 with a score of 84.0: 48 of its rows lie inside the Moon habitat box, including all 20 clean (grade A) rows in PSI, and 332 of 333 rows record an outcome. It is the main source on whether flames go out, keep burning or turn into cool flames at Moon-habitat oxygen and pressure. Evidence: A.",
       "limits": "Its fuels are gases, not cabin materials. 154 rows are grade B: in inverse flames the oxygen value is the burner oxidizer fraction, not cabin air. 'Extinguished' marks the end of the hot flame; cool flames may have continued afterwards. Evidence: B."
     },
@@ -54,8 +54,8 @@
       "limits": "Outcomes are recorded for only 37 rows and were parsed from free-text notes (low confidence); a few were checked by hand. 'Extinguished' also includes flames ended by the operator. No test reaches 30 % oxygen. Evidence: A."
     },
     "PSI-10": {
-      "summary": "ACME Flame Design burned ethylene and propane on a spherical porous burner in the Combustion Integrated Rack, in normal flames (fuel out of the burner) and inverse flames (oxygen out of the burner). Oxygen ranges from 19.75 to 85 % and pressure from 0.425 to 3.008 atm. It studied flame structure and soot formation. Evidence: mixed.",
-      "fire_safety_relevance": "Ranked 4 of 12 with a score of 45.1. 18 inverse-flame rows reach the Moon habitat box, all grade B. Its wide oxygen and pressure coverage supports models of gas-flame structure across cabin atmospheres. Evidence: B.",
+      "summary": "ACME Flame Design burned ethylene and propane on a spherical burner in the Combustion Integrated Rack, in normal flames (fuel out of the burner) and inverse flames (oxygen out of the burner). Oxygen ranges from 19.75 to 85 % and pressure from 0.425 to 3.008 atm. It studied flame structure and soot formation. Evidence: mixed.",
+      "fire_safety_relevance": "Ranked 4 of 12 with a score of 45.1. 18 inverse-flame rows reach the Moon habitat box, all grade B: their oxygen is the burner oxidizer fraction, not cabin air. Its wide oxygen and pressure coverage supports models of gas-flame structure across cabin atmospheres. Evidence: B.",
       "limits": "No outcome is recorded in its tables (327 rows not recorded). Inverse-flame oxygen is the burner oxidizer fraction, not cabin air. Its license is not stated in PSI; cite DOI 10.60555/w4zy-bt45. Evidence: B."
     },
     "PSI-39": {
@@ -81,15 +81,15 @@
     "PSI-98": {
       "summary": "SAFFIRE-I burned a large SIBAL cotton-fiberglass fabric sample in an enclosure inside an uncrewed Cygnus cargo vehicle to observe flame spread at spacecraft scale. Its PSI table lists 2 rows with oxygen near 21.5 %. Evidence: mixed.",
       "fire_safety_relevance": "Ranked 9 of 12 with a score of 20.0. It tested fire spread over a cabin-type fabric at a scale far larger than glovebox samples. Its low rank reflects missing table data, not low importance. Evidence: mixed.",
-      "limits": "The table has no pressure, so both rows are grade D and are not plotted; no outcome is recorded. Evidence: mixed."
+      "limits": "The table has no pressure, so both rows are grade D and are not plotted. No outcome is recorded for either row. Evidence: mixed."
     },
     "PSI-99": {
       "summary": "SAFFIRE-II burned samples of different materials (SIBAL fabric, PMMA, PMMA with Nomex, silicone) in an enclosure inside an uncrewed Cygnus cargo vehicle; its PSI table lists 9 rows with oxygen from 21.5 to 22.1 %. It compared the flammability of several cabin-type materials. Evidence: mixed.",
       "fire_safety_relevance": "Ranked 10 of 12 with a score of 20.0. It covers several cabin-type materials in one spacecraft-scale enclosure, which is the kind of comparison material selection relies on. Its low rank reflects missing table data, not low importance. Evidence: mixed.",
-      "limits": "The table has no pressure, so all 9 rows are grade D and are not plotted; no outcome is recorded, and 2 rows have an empty material cell in the source. Evidence: mixed."
+      "limits": "The table has no pressure, so all 9 rows are grade D and are not plotted. No outcome is recorded, and 2 rows have an empty material cell in the source. Evidence: mixed."
     },
     "PSI-20": {
-      "summary": "The Burning Rate Emulator burned ethylene and methane from a porous burner to emulate how solid materials burn, in still atmospheres with oxygen from 21 to 40 %. Its table is a day-level summary that lists the approximate oxygen levels of tests that ignited. Evidence: C.",
+      "summary": "The Burning Rate Emulator burned ethylene and methane from a burner to emulate how solid materials burn, in still atmospheres with oxygen from 21 to 40 %. Its table is a day-level summary that lists the approximate oxygen levels of tests that ignited. Evidence: C.",
       "fire_safety_relevance": "Ranked 11 of 12 with a score of 18.9. 13 rows fall in the Moon habitat box, which makes it one of the few PSI sources on material-like burning at Moon-habitat oxygen. Evidence: C.",
       "limits": "Its pressures are mapped from the final report, not measured per test. 16 rows lack pressure (grade D) and no outcome is recorded. Evidence: C."
     },
@@ -114,7 +114,7 @@
     },
     {
       "q": "What happened in the cleanest tests inside the Moon habitat box?",
-      "a": "The 20 grade A rows are PSI-159 gas flames at 0.5 atm: 13 extinguished, 4 sustained, 2 became cool flames and 1 is not recorded. Evidence: A.",
+      "a": "The 20 grade A rows are PSI-159 gas flames at 0.5 atm in ambient oxygen above 30 %. Their outcomes are 13 extinguished, 4 sustained, 2 cool flames and 1 not recorded. Evidence: A.",
       "evidence": "A",
       "sources": ["PSI-159"]
     },
