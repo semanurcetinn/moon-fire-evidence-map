@@ -1,3 +1,7 @@
+> **English note:** this is an internal working report of the data pipeline, kept in Turkish,
+> the team's working language. Everything needed to read the project is in English: the root
+> `README.md`, `docs/COLUMNS.md` (columns), `docs/METHOD_RANKING.md` (ranking) and `docs/FREEZE.md`.
+
 # YAMA v3.1 (2026-11-14) – çok küçük yama
 
 - **Yedek:** `ETL/backup/v3_oncesi_v31/` (salt okunur)

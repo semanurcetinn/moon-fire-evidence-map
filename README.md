@@ -25,6 +25,7 @@ Space Chillers · NASA Space Apps Challenge 2026 · "Flame in Freefall"
 ## Data
 - Source: NASA Physical Sciences Informatics (PSI). 25 investigations were reviewed; 12 are harmonized into one table of 1,805 test rows (`data/experiments.csv`, dashboard copy `data/experiments_dashboard.csv`); English column guide in `docs/COLUMNS.md`.
 - The frozen package (v3.1) and its sha256 hashes are in `docs/FREEZE.md` and `MANIFEST.sha256`; the dashboard file `web/data/app_data.json` is built by `scripts/build_dashboard_data.py`.
+- Everything a reader needs is in English: this README, `docs/COLUMNS.md` (columns), `docs/METHOD_RANKING.md` (ranking) and `docs/FREEZE.md` (freeze). The remaining files in `docs/` are internal pipeline reports kept in Turkish, the team's working language; two of them are part of the frozen package and are therefore left exactly as the pipeline wrote them.
 - Citation: every investigation DOI is listed in `data/investigations.csv` and linked in the dashboard.
 
 ## Method
