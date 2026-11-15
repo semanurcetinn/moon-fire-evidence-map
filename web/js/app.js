@@ -106,11 +106,15 @@
     });
   }
 
+  // The frozen data keeps one ETL note in Turkish (PSI-10 inverse rows); show it in English on screen.
+  function displayFuel(f) {
+    return f ? String(f).replace("(turetilmis: XC2H4 kolonu)", "(derived from the XC2H4 column)") : f;
+  }
   function hoverText(r) {
     var pTxt = r.p == null ? "n/a" : (round(r.p, 3) + " atm (" + round(r.p * 14.696, 1) + " psi)") +
       (r.p_assumed ? " – assumed / report-mapped" : "") + (r.p === 0 ? " – recorded as 0, flagged" : "");
     return "<b>" + esc(r.psi) + " · test " + esc(r.test) + "</b><br>" +
-      "Fuel: " + esc(r.fuel || "n/a") + " (" + esc(PHASE[r.phase].label.toLowerCase()) + ")<br>" +
+      "Fuel: " + esc(displayFuel(r.fuel) || "n/a") + " (" + esc(PHASE[r.phase].label.toLowerCase()) + ")<br>" +
       "O₂: " + rangeTxt(r.o2_min, r.o2_max, " %") + (r.o2_basis === "oxidizer_stream" ? " (oxidizer stream)" : "") + "<br>" +
       "Pressure: " + pTxt + "<br>" +
       (r.flow_min != null || r.flow_max != null ? "Flow: " + rangeTxt(r.flow_min, r.flow_max, " cm/s") + "<br>" : "") +
