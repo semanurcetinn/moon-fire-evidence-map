@@ -1,3 +1,6 @@
+> **English note:** this detailed data card is in Turkish; an English summary is in the root `README.md`.
+> For the columns in English see `docs/COLUMNS.md`; the ranking method is in `docs/METHOD_RANKING.md`.
+
 # DATA_CARD – NASA PSI yangın / yanma deney tablosu (ETL v3.1)
 
 - **Sürüm:** v3.1 (freeze) · 2026-11-14 · satır **1805** · investigation **12** (Tier-1)

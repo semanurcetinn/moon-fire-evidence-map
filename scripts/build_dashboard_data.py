@@ -1,6 +1,5 @@
 """Build web/data/app_data.json + web/data/investigation_ranking.csv from the FROZEN v3.1 CSVs.
-Read-only on data/. Usage:  python scripts/build_dashboard_data.py <data_dir> <out_dir>
-AI disclosure: this script was drafted with an AI assistant (Claude) and reviewed by the team."""
+Read-only on data/. Usage:  python scripts/build_dashboard_data.py <data_dir> <out_dir>"""
 import sys, json, hashlib, datetime
 import pandas as pd
 

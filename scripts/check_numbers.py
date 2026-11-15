@@ -29,8 +29,9 @@ IDENTIFIER_PATTERNS = [
     r"\bPSI-\d+\b",                      # investigation ids
     r"\b[0-9a-f]{7,64}\b",               # hashes
     r"\bv\d+(?:\.\d+)*\b",               # versions (v3.1)
+    # report ids must be stripped BEFORE years, otherwise "TP-2015-216046" loses its year and leaves 216046
+    r"\b(?:NASA/)?TP-\d{4}-\d+\b", r"\b(?:NASA\s+)?TM-\d+\b", r"\bNTRS\s*\d+\b", r"\bSAE\s*\d{4}-\d{2}-\d{4}\b",
     r"\b(?:19|20)\d\d\b",                # years
-    r"\b(?:NASA/)?TP-\d{4}-\d+\b", r"\bNTRS\s*\d+\b", r"\bSAE\s*\d{4}-\d{2}-\d{4}\b",
     r"\b(?:SAFFIRE|FLEX|BASS|DAFT|SAME|CFI)-(?:\d+|I{1,3}|R|G)\b",
     r"\b(?:[A-Z][a-z]?\d*)*[A-Z][a-z]?\d+(?:[A-Z][a-z]?\d*)*\b",   # chemical formulas: O2, CO2, C2H4, C12H26
     r"O₂|CO₂|N₂",
